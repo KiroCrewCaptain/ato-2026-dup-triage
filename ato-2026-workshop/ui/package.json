@@ -1,0 +1,15 @@
+{
+  "name": "ato-2026-workshop-ui",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/App.tsx --bundle --format=esm --jsx=automatic --target=es2020 --external:react --external:react-dom --external:react/jsx-runtime --external:@kirocrew/app-sdk --external:@kirocrew/app-sdk/ui --outfile=dist/index.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  },
+  "peerDependencies": {
+    "@kirocrew/app-sdk": "*",
+    "react": "*"
+  }
+}

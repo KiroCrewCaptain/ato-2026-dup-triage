@@ -1,0 +1,38 @@
+{
+  "name": "ato-2026-workshop",
+  "version": "1.0.0",
+  "displayName": "ATO 2026 Workshop",
+  "description": "Your guide for the All Things Open 2026 Kiro Crew workshop. Its page walks you through building your own Kiro Crew app, step by step, and its guide agent does the typing. It asks before it changes a file and never writes to GitHub.",
+  "author": "ATO 2026 workshop",
+  "license": "Apache-2.0",
+  "iconPath": "assets/icon.png",
+  "agents": [
+    "agents/workshop-guide.json"
+  ],
+  "skills": [
+    "skills/workshop-guide"
+  ],
+  "tags": [
+    "workshop",
+    "github",
+    "issue-triage",
+    "open-source"
+  ],
+  "ui": {
+    "entry": "dist/index.mjs",
+    "pages": [
+      {
+        "route": "/apps/ato-2026-workshop",
+        "label": "ATO 2026 Workshop",
+        "icon": "Star"
+      }
+    ]
+  },
+  "platform": {
+    "os": [
+      "macos",
+      "linux",
+      "windows"
+    ]
+  }
+}

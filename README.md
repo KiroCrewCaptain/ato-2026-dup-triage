@@ -58,6 +58,13 @@ words, from different OSes and versions.
 
 3. **Open it** in Kiro Crew: start a dashboard chat with this folder as its
    project folder.
+4. **Install the ATO 2026 Workshop app** from this repo. It is your guide for
+   the rest of the session:
+   **Discover** → database icon (**Manage app sources**) → **Install from
+   Path** → the full path of `ato-2026-workshop/` in your clone → **Install**.
+   Then **Library** → **Show N disabled apps** → **ATO 2026 Workshop** → **⋯**
+   → **Enable** → **Trust this app and enable**. Open **ATO 2026 Workshop** in
+   the sidebar and follow its steps. Details: [ato-2026-workshop/README.md](ato-2026-workshop/README.md).
 
 ### Read this once: forks do not copy issues
 
@@ -167,6 +174,8 @@ your fork, make a second fine-grained token for **only your fork** with
 
 ```
 README.md            this handout
+ato-2026-workshop/   the ATO 2026 Workshop app: guide page + guide agent (install first)
+app-registry.json    lists ato-2026-workshop, so this repo also works as a Kiro Crew app registry
 answer-key.md        expected duplicate groups, near-misses, remix lists
 data/issues.json     offline copy of the base repo's open issues
 seed/issues.json     the issues as written (used to seed the base repo)
