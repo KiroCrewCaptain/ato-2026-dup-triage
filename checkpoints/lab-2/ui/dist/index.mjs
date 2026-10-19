@@ -214,7 +214,7 @@ function BacklogFactory() {
   const runNow = () => openChat({
     agent: AGENT,
     autoSend: true,
-    message: `Run the Backlog Factory on my repo folder: ${repo || "~/ato-2026-dup-triage"}. Use every Backlog Factory skill you have, in order. Ask me yes/no before your first write. Write nothing to GitHub.`
+    message: `Run the Backlog Factory on my repo folder: ${repo || "~/ato-2026-dup-triage"}. Use every Backlog Factory skill you have, in order, and skip a step that has no new work (the board is the memory). Ask me yes/no once per step. Write nothing to GitHub.`
   });
   const sendBack = (c) => openChat({
     agent: AGENT,
@@ -318,6 +318,7 @@ function BacklogFactory() {
   const BugView = () => {
     const c = bugs.find((b) => b.n === pick) || bugs.find((b) => laneOf(b) === "ready") || bugs.find((b) => laneOf(b) === "fix") || bugs[0];
     if (!c) return /* @__PURE__ */ jsx("p", { className: "why", children: "No bugs sorted yet. Run the factory first." });
+    if (typeof c.repro === "string") c.repro = { note: c.repro, result: "noted" };
     const steps = [["Sorted: bug", true], ["Reproduced", !!c.repro?.result], ["Details added", !!c.details], [`Fix \u21C4 Review${c.fix?.rounds?.length ? ` \xB7 round ${c.fix.rounds.length}` : ""}`, laneOf(c) === "ready"], ["Ready to merge", laneOf(c) === "ready"], ["You merge", false]];
     const nowIdx = steps.findIndex(([, d]) => !d);
     return /* @__PURE__ */ jsxs("div", { className: "two", children: [
@@ -358,8 +359,8 @@ function BacklogFactory() {
                 c.repro.where || "your clone"
               ] }),
               /* @__PURE__ */ jsxs("pre", { children: [
-                `$ ${c.repro.cmd}
-${c.repro.out || ""}`,
+                c.repro.cmd ? `$ ${c.repro.cmd}
+${c.repro.out || ""}` : "",
                 c.repro.note ? `
 \u2190 ${c.repro.note}` : "",
                 c.repro.test ? `

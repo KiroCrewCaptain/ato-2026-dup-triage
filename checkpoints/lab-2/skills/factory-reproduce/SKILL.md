@@ -1,45 +1,87 @@
 ---
 name: factory-reproduce
-description: Backlog Factory step 2. For each bug in the reproduce lane, reproduce it for real in the local clone (exact commands plus real output, or a failing unittest), add the five-whys root cause as "details added", and move it to fix, needs_you or needs_info. Uses helper agents for batches. Use after triage, or when asked to reproduce bugs.
+description: Backlog Factory step 2. For each bug in the reproduce lane, reproduce it for real in the local clone (exact commands plus real output, or a failing unittest), add the five-whys root cause as "details added", and move it to fix, needs_you or needs_info. Uses two helper agents. Use after triage, or when asked to reproduce bugs.
 ---
 
 # Reproduce: prove each bug before anyone fixes it
 
-Run after `factory-triage`. Read `<repo>/factory/board.json`; work on cards with `lane: "reproduce"`.
+Run after `factory-triage`. Work on cards with `lane: "reproduce"` in `<repo>/factory/board.json`.
 Skip a card that already has `repro.result` (the board is the memory: a re-run only does
 new work). Duplicates are not reproduced: only the card they point to (`dup_of`).
+
+**Every tool call costs the person one click in Normal mode. Aim for about 10 clicks for
+the whole step.** So: read the board once, ask once, start the helpers in ONE `spawn_run`
+call, write the board once at the end.
 
 ## Rules
 
 1. Never touch the person's real notes. Every command runs with a throwaway file:
-   `JOT_FILE=<repo>/factory/tmp/<n>.json python -m jot ...` from the repo folder.
-   (`python3` on macOS/Linux, `py` or `python` on Windows.)
+   `JOT_FILE=<repo>/factory/tmp/<n>.json python3 -m jot ...` from the repo folder.
+   (`py` or `python` on Windows.)
 2. Run the real commands. Paste the real output. Never invent output. If a command
    cannot run here (another OS, a missing tool), the verdict is `cant_reproduce` and the
    card says what is needed.
-3. Optional: write a failing test at `<repo>/factory/repro/test_<n>.py` (unittest, imports
-   `jot.cli`). Run it with `python -m unittest factory/repro/test_<n>.py` from the repo
-   folder and paste the result line. Do not edit `jot/` or `tests/` in this step.
+3. The evidence is the jot command and its real output. No unit tests in this step (the
+   Lab 3 fixer writes the test). Do not edit `jot/` or `tests/`.
 4. GitHub stays read only. Nothing in this step talks to the network.
 
-## Helpers (more than 3 bugs)
+## The step, in order
 
-This is the point of the lab: use helpers whenever there are more than 3 bugs. Do not
-skip them to save the person a click; the Allow click is part of the lesson.
-Your yes/no question must name them, for example "I will start 2 helpers: #12 #49 and
-#16 #58, then update board.json. OK? (yes / no)". After the yes, your FIRST action is
-`spawn_run` with those batches. Do not reproduce them yourself first.
-Split the bugs into batches of 2 to 3 and start one helper per batch with `spawn_run`,
-`agent: "factory-reproducer"`, and NO `cwd` (Kiro Crew 0.9.0 accepts a `cwd` only under `~/workspace`, `~/workplace` and
-similar roots; the repo folder may be anywhere). Each helper's task gets: the repo
-folder's ABSOLUTE path with "start every shell command with cd <that path>", its issue
-numbers, the issue texts, and rules 1-4 above. Each helper replies with JSON per issue: `n`, `cmd`, `out`, `test`, `result`,
-`root`. You merge the replies into `board.json`. Only if the `spawn_run` tool is missing
-from your tools, or a helper fails, do that batch yourself, and say why in one line.
+1. **Read once.** One shell call prints, for each reproduce card: `n`, title, the issue
+   body, and the card's `frame.root` (from triage). That is everything the helpers need:
+   do not read `jot/cli.py` yourself, and after the yes do not read the board or this
+   skill again.
+2. **Ask once.** "I will start 2 helpers: #a #b #c … and #x #y #z …, then write
+   board.json once at the end. OK? (yes / no)". Fewer than 4 bugs: one helper.
+   That one yes covers the helpers AND the final board write: do not ask again, and do not
+   re-read files you already read in this chat.
+3. **Start the helpers in ONE `spawn_run` call, and never pass `cwd`** (0.9.0 refuses it for
+   this folder, and each refused spawn costs the person two more clicks). Use a `tasks` list of two tasks with
+   `agent: "factory-reproducer"` for each (a `cwd` is accepted only under `~/workspace`,
+   `~/workplace` and similar roots; the repo may be anywhere).
+   Each task holds: the repo's ABSOLUTE path, its bugs (number, title, body, root), and
+   the line "Do your WHOLE batch in ONE shell call (see your prompt)."
+   Tell the person in one line: "Each helper waits for your **Allow** (Review in panel →
+   Allow): 2 clicks to start, then about 1 click each."
+4. **Wait for both completion events.** A helper's completion is final, whatever its
+   status. When BOTH have completed:
+   - a helper that came back `completed` with JSON → use the JSON from its completion
+     event as it is (do not open its result file, do not re-run its commands);
+   - a helper that came back **Stopped, failed, cancelled, timed out, or without JSON** →
+     do ITS batch yourself right away, in ONE shell call (same script shape as the helper),
+     and say "Helper 2 stopped, so I did #x #y #z myself." Never wait for a helper that has
+     already completed, and never say "I wait for the next helper" unless one is still
+     running.
+5. **Write the board once**, with ONE shell call from the repo folder that runs exactly
+   this script, with the helpers' JSON lists pasted in. Never edit cards one by one with
+   the file tool (each edit is a click). Then report.
 
-In Normal mode each helper waits for the person's OK before it starts (Subagents
-panel: **Review in panel → Allow**). Say so once, in one line, and wait. Do not cancel
-the helpers and do not redo their work inline while they wait.
+```bash
+python3 - <<'PY'
+import json
+p = "factory/board.json"; b = json.load(open(p, encoding="utf-8"))
+results = []          # paste helper 1's JSON list here, then: results += [ ...helper 2... ]
+cards = {c["n"]: c for c in b["issues"]}
+for r in results:
+    c = cards[r["n"]]
+    c["repro"] = {"cmd": r["cmd"], "out": r["out"], "note": r.get("note", ""),
+                  "result": r["result"], "where": "your clone"}
+    c["details"] = "Cause: " + r["root"]
+    if r["result"] == "reproduced":
+        c.update(lane="fix", status="reproduced", track=["sorted", "reproduced", "details"])
+    elif r["result"] == "cant_reproduce":
+        c.update(lane="needs_you", needs="cant_reproduce", status="can't reproduce here",
+                 reply=r.get("note", ""))
+    else:
+        c.update(lane="triage", kind="feature", status="works as designed", verdict="reframe")
+b["run"] = {"state": "idle", "step": "reproduce done"}
+json.dump(b, open(p, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+print(len(results), "cards updated")
+PY
+```
+
+If `spawn_run` is not in your tools at all, skip steps 3-4 and do both batches yourself,
+one shell call each.
 
 ## What to write per card
 
@@ -48,8 +90,7 @@ the helpers and do not redo their work inline while they wait.
   "cmd": "jot add a; jot add b; jot add c; jot rm 2; jot add d; jot list",
   "out": "1  a\n3  c\n3  d",
   "note": "same ID as c",
-  "test": "factory/repro/test_32.py::test_id_not_reused",
-  "result": "FAILED",
+  "result": "reproduced",
   "where": "your clone"
 },
 "details": "Cause: next_id() returns len(notes) + 1. Any version. Any OS."
@@ -61,8 +102,9 @@ Then set:
   `reply` the person could send the reporter (they copy it; you never post it)
 - works as designed → set `lane: "triage"` as a feature with a `frame`, verdict `reframe`
 
-Rewrite `board.json` after each helper's reply. At the end: `run.step = "reproduce done"`.
+At the end: `run.step = "reproduce done"`, `run.state = "idle"`.
 
 ## Report
 
-A table: issue → reproduced? → root cause (one line). Then: "Next: the fix-review step."
+A table: issue → reproduced? → root cause (one line). Then the click count if you know it,
+and: "Next: the fix-review step."

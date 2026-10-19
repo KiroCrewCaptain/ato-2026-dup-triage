@@ -224,7 +224,7 @@ export default function BacklogFactory() {
   }
   const runNow = () => openChat({
     agent: AGENT, autoSend: true,
-    message: `Run the Backlog Factory on my repo folder: ${repo || '~/ato-2026-dup-triage'}. Use every Backlog Factory skill you have, in order. Ask me yes/no before your first write. Write nothing to GitHub.`,
+    message: `Run the Backlog Factory on my repo folder: ${repo || '~/ato-2026-dup-triage'}. Use every Backlog Factory skill you have, in order, and skip a step that has no new work (the board is the memory). Ask me yes/no once per step. Write nothing to GitHub.`,
   })
   const sendBack = (c: Card) => openChat({
     agent: AGENT, autoSend: true,
@@ -309,6 +309,8 @@ export default function BacklogFactory() {
   const BugView = () => {
     const c = bugs.find((b) => b.n === pick) || bugs.find((b) => laneOf(b) === 'ready') || bugs.find((b) => laneOf(b) === 'fix') || bugs[0]
     if (!c) return <p className="why">No bugs sorted yet. Run the factory first.</p>
+    // An agent may write repro as plain text; show it instead of an empty block.
+    if (typeof (c as any).repro === 'string') c.repro = { note: (c as any).repro, result: 'noted' }
     const steps = [['Sorted: bug', true], ['Reproduced', !!c.repro?.result], ['Details added', !!c.details], [`Fix ⇄ Review${c.fix?.rounds?.length ? ` · round ${c.fix.rounds.length}` : ''}`, laneOf(c) === 'ready'], ['Ready to merge', laneOf(c) === 'ready'], ['You merge', false]] as const
     const nowIdx = steps.findIndex(([, d]) => !d)
     return (
@@ -325,7 +327,7 @@ export default function BacklogFactory() {
               {c.frame?.whys?.length ? <><div className="h">Five whys</div>{c.frame.whys.map((w, i) => <div key={i} className="why">why? {w}</div>)}</> : null}
               {c.repro ? <>
                 <div className="h">Reproduced · {c.repro.where || 'your clone'}</div>
-                <pre>{`$ ${c.repro.cmd}\n${c.repro.out || ''}`}{c.repro.note ? `\n← ${c.repro.note}` : ''}{c.repro.test ? `\nnew test: ${c.repro.test}  ${c.repro.result || ''}` : ''}</pre>
+                <pre>{c.repro.cmd ? `$ ${c.repro.cmd}\n${c.repro.out || ''}` : ''}{c.repro.note ? `\n← ${c.repro.note}` : ''}{c.repro.test ? `\nnew test: ${c.repro.test}  ${c.repro.result || ''}` : ''}</pre>
               </> : <p className="why">Not reproduced yet.</p>}
               {c.details && <><div className="h">Details added</div><p className="root">{c.details}</p></>}
             </div>
