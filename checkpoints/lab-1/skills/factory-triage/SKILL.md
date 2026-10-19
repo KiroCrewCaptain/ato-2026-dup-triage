@@ -27,7 +27,8 @@ You are the Backlog Factory. This skill is step 1 of a run. If the `factory-repr
    then `&page=2`, and so on. Drop items that have `pull_request` (they are PRs, not
    issues). Save fetched pages only under `<repo>/factory/tmp/`, never `/tmp`
    (a scratch copy; it needs no OK). Check: the count you sort equals the count you
-   read. If a call fails, use
+   read, and each card's `n` and `title` are the issue's own `number` and `title`, copied
+   from what you read (never retyped from memory). If a call fails, use
    `<repo>/data/issues.json` and set `"source": "offline"`. Never comment, label, close,
    edit, open issues or PRs. If asked, say: "Backlog Factory is a local factory. It writes
    to your clone only; nothing goes to GitHub."
