@@ -1,43 +1,54 @@
 {
-  "name": "dup-triage",
+  "name": "backlog-factory",
   "version": "0.3.0",
-  "displayName": "Dup Detective",
-  "description": "Finds likely duplicate GitHub issues and explains every match. Drafts by default; posts one comment, only on your own fork, only after your yes.",
+  "displayName": "Backlog Factory",
+  "description": "An agentic app that triages your GitHub backlog: sorts each issue (good problem? five whys, first principles), reproduces bugs in your clone, then a fixer and a reviewer loop until the fix is green. You merge. It never writes to GitHub.",
   "author": "ATO 2026 workshop",
   "license": "Apache-2.0",
   "iconPath": "assets/icon.png",
   "agents": [
-    "agents/dup-triage.json"
+    "agents/backlog-factory.json",
+    "agents/factory-fixer.json",
+    "agents/factory-reviewer.json"
   ],
   "skills": [
-    "skills/dup-triage"
+    "skills/factory-triage",
+    "skills/factory-reproduce",
+    "skills/factory-fix-review"
   ],
   "tags": [
     "github",
-    "triage"
+    "triage",
+    "software-factory"
   ],
+  "backend": {
+    "hooks": {
+      "routes": "backend.routes:register_routes"
+    }
+  },
   "ui": {
     "entry": "dist/index.mjs",
     "pages": [
       {
-        "route": "/apps/dup-triage",
-        "label": "Dup Detective",
-        "icon": "Package"
+        "route": "/apps/backlog-factory",
+        "label": "Backlog Factory",
+        "icon": "Factory"
       }
     ]
   },
   "crons": [
     {
-      "name": "dup-triage-daily",
+      "name": "factory-weekday",
       "cron_expr": "0 7 * * 1-5",
       "timezone": "America/New_York",
-      "message": "Use the dup-triage skill on the open issues of KiroCrewCaptain/ato-2026-dup-triage. Write dup-triage-report.md. Post nothing.",
+      "message": "Run one Backlog Factory pass: follow the factory-triage, factory-reproduce and factory-fix-review skills on the repo folder saved on the Backlog Factory page. Scheduled run: sort and reproduce only, start no fixes, write nothing to GitHub.",
       "enabled": false
     }
   ],
   "permissions": {
     "api": [
-      "/api/crons"
+      "/api/crons",
+      "/api/apps/backlog-factory"
     ],
     "cron": true
   },

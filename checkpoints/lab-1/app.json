@@ -1,31 +1,58 @@
 {
-  "name": "dup-triage",
+  "name": "backlog-factory",
   "version": "0.1.0",
-  "displayName": "Dup Detective",
-  "description": "Finds likely duplicate GitHub issues and explains every match. Drafts only; never posts.",
+  "displayName": "Backlog Factory",
+  "description": "Lab 1 of Backlog Factory: sorts every open issue (good problem? five whys, first principles) onto a board. Reads GitHub, never writes to it.",
   "author": "ATO 2026 workshop",
   "license": "Apache-2.0",
   "iconPath": "assets/icon.png",
   "agents": [
-    "agents/dup-triage.json"
+    "agents/backlog-factory.json"
   ],
   "skills": [
-    "skills/dup-triage"
+    "skills/factory-triage"
   ],
-  "tags": ["github", "triage"],
+  "tags": [
+    "github",
+    "triage",
+    "software-factory"
+  ],
+  "backend": {
+    "hooks": {
+      "routes": "backend.routes:register_routes"
+    }
+  },
+  "ui": {
+    "entry": "dist/index.mjs",
+    "pages": [
+      {
+        "route": "/apps/backlog-factory",
+        "label": "Backlog Factory",
+        "icon": "Factory"
+      }
+    ]
+  },
   "crons": [
     {
-      "name": "dup-triage-daily",
+      "name": "factory-weekday",
       "cron_expr": "0 7 * * 1-5",
       "timezone": "America/New_York",
-      "message": "Use the dup-triage skill on the open issues of KiroCrewCaptain/ato-2026-dup-triage. Write dup-triage-report.md. Post nothing.",
+      "message": "Run one Backlog Factory pass: follow the factory-triage, factory-reproduce and factory-fix-review skills on the repo folder saved on the Backlog Factory page. Scheduled run: sort and reproduce only, start no fixes, write nothing to GitHub.",
       "enabled": false
     }
   ],
   "permissions": {
+    "api": [
+      "/api/crons",
+      "/api/apps/backlog-factory"
+    ],
     "cron": true
   },
   "platform": {
-    "os": ["macos", "linux", "windows"]
+    "os": [
+      "macos",
+      "linux",
+      "windows"
+    ]
   }
 }

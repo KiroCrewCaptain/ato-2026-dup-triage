@@ -37,45 +37,46 @@ type Step = {
 
 const STEPS: Step[] = [
   { id: 's1', n: 1, title: 'Check your setup', ghost: 'pose-1.svg',
-    does: 'The guide looks at your clone, your fork and the kirocrew command. It only reads.',
+    does: 'The guide looks at your repo folder, Python, git and the kirocrew command. It only reads.',
     see: 'A short checklist that ends with “All set, press Step 2”.' },
   { id: 's2', n: 2, lab: 'Lab 1', title: 'Build your app', ghost: 'pose-3.svg',
-    does: 'The guide copies Lab 1 into dup-triage/ and installs your app, after your yes.',
-    see: 'Dup Detective in Library. You trust and enable it there.' },
-  { id: 's3', n: 3, lab: 'Lab 1', title: 'First run and check', ghost: 'pose-5.svg',
-    does: 'You chat with your app’s agent, dup-triage. The guide scores its report against the answer key.',
-    see: 'dup-triage-report.md with duplicate groups, each with a quote from both issues.' },
-  { id: 's4', n: 4, lab: 'Lab 2', title: 'Memory and helpers', ghost: 'pose-7.svg',
-    does: 'Your app gets memory: its agent keeps its verdicts and splits big lists across helper agents.',
-    see: 'The second run says “N reused”. Each helper waits for your Allow.' },
-  { id: 's5', n: 5, lab: 'Lab 3', title: 'Schedule, boundary and a page', ghost: 'pose-8.svg',
-    does: 'Your app gets a paused weekday cron job, a post-only-on-your-fork rule, and its own page.',
-    see: 'A Dup Detective page in the sidebar. The schedule shows Paused.' },
+    does: 'The guide copies Lab 1 into backlog-factory/ and installs your app, after your yes.',
+    see: 'Backlog Factory in the sidebar, after you trust and enable it in Library.' },
+  { id: 's3', n: 3, lab: 'Lab 1', title: 'Sort the backlog', ghost: 'pose-5.svg',
+    does: 'Press Run now on your app’s page. Its agent asks: good problem? five whys? first principles?',
+    see: 'A board with lanes and counts. Each card has a verdict and a one-line reason.' },
+  { id: 's4', n: 4, lab: 'Lab 2', title: 'Reproduce with helpers', ghost: 'pose-7.svg',
+    does: 'Your app splits the bugs across helper agents. Each runs jot in your folder and pastes the real output.',
+    see: 'Bugs with a real command and output. Each helper waits for your Allow.' },
+  { id: 's5', n: 5, lab: 'Lab 3', title: 'Fix ⇄ Review', ghost: 'pose-8.svg',
+    does: 'A fixer and a separate reviewer loop on a local branch until the review is green. Needs git.',
+    see: 'A card in Ready to merge. You read the diff and you merge.' },
   { id: 's6', n: 6, title: 'Remix it into your idea', ghost: 'wave.svg',
-    does: 'Tell the guide your idea. It writes a new skill into your app and reinstalls.',
-    see: 'Your own skill inside your app. Try it in a chat with dup-triage.' },
+    does: 'Tell the guide your rule or lane. It edits your app’s skill and reinstalls.',
+    see: 'Your own rule on the board after the next Run now.' },
   { id: 's7', n: 7, title: 'Share it', ghost: 'pose-1.svg',
-    does: 'The guide commits your app on a branch. You push it to your fork yourself.',
-    see: 'Your app in your fork. A friend clones it and installs the dup-triage/ folder.' },
+    does: 'The guide zips your app folder. Nothing goes to GitHub today.',
+    see: 'backlog-factory.zip. A friend installs it with Install from Path.' },
 ]
 
 const SETUP = [
   { id: 'c1', title: 'Kiro Crew installed', hint: 'You are reading this page, so yes.' },
   { id: 'c2', title: 'Signed in', hint: 'The Set up Kiro page is done and a chat answers.' },
-  { id: 'c3', title: 'Your fork, cloned (or the ZIP)', hint: 'Fork the starter repo on GitHub, then clone your fork. No git? Download the ZIP.' },
+  { id: 'c3', title: 'Repo cloned (or ZIP downloaded)', hint: 'git clone the starter repo into ~/ato-2026-dup-triage. No git? Download the ZIP and unzip it: ato-2026-dup-triage-main.' },
+  { id: 'c4', title: 'Python 3.9 or newer', hint: 'The factory runs jot to reproduce bugs. Check: python3 --version (Windows: py --version).' },
 ]
 
 // "What is an app?" — the owner's model, same labels as the deck (slides 3-4).
 // The real Lab 3 part sits under each label.
 const PLUGIN = [
-  { k: 'Skill', code: 'skills/', real: 'skills/dup-triage' },
+  { k: 'Skill', code: 'skills/', real: 'skills/factory-triage' },
   { k: 'MCP', code: 'mcpServers', real: 'optional: none of its own' },
 ]
 const APP_PARTS = [
-  { k: 'Cron jobs', code: 'crons', real: 'dup-triage-daily, paused' },
-  { k: 'Memory', code: 'verdicts file', real: 'dup-triage-verdicts.json' },
-  { k: 'Harness API', code: '@kirocrew-core', real: 'spawn_run · /api/crons' },
-  { k: 'UI bundle', code: 'ui/dist', real: 'its own page' },
+  { k: 'Cron jobs', code: 'crons', real: 'factory-weekday, paused' },
+  { k: 'Memory', code: 'board file', real: 'factory/board.json' },
+  { k: 'Harness API', code: '@kirocrew-core', real: 'spawn_run · spawn_continue' },
+  { k: 'UI bundle', code: 'ui/dist + backend', real: 'the board page' },
 ]
 const OS_MAP = [
   ['OS', 'Kiro Crew'],
@@ -429,7 +430,7 @@ export default function AtoWorkshop() {
                 </span>
               ))}
             </h1>
-            <p className="tag rise" style={{ ['--d' as string]: '.6s' }}>An agentic app that triages your backlog while you sleep</p>
+            <p className="tag rise" style={{ ['--d' as string]: '.6s' }}>An agentic software factory that turns GitHub issues into reviewed fixes</p>
             <ul className="facts" aria-label="Session facts">
               {['Mon, Oct 19, 2026', '2:30–4:30 PM ET', 'Room 304'].map((f, i) => (
                 <li key={f} style={{ ['--d' as string]: `${0.7 + 0.07 * i}s` }}>{f}</li>
@@ -447,7 +448,7 @@ export default function AtoWorkshop() {
       <div className="wrap">
         <div className="track" ref={trackRef} role="group" aria-label="Workshop progress">
           <div className="lbl">
-            <span>{nextStep ? `Next: Step ${nextStep.n} — ${nextStep.title}` : 'All steps done. Share your fork!'}</span>
+            <span>{nextStep ? `Next: Step ${nextStep.n} — ${nextStep.title}` : 'All steps done. Share your app!'}</span>
             <span>{count} of {total} done</span>
           </div>
           <div className="bar" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={count} aria-label={`${count} of ${total} done`}>
@@ -463,7 +464,7 @@ export default function AtoWorkshop() {
 
         <section className="s rv" aria-labelledby="setup-h">
           <h2 id="setup-h" className="rvi">Before you start</h2>
-          <p className="lead rvi" style={{ ['--i' as string]: 1 }}>Three things. Tick each one when it is true.</p>
+          <p className="lead rvi" style={{ ['--i' as string]: 1 }}>Four things. Tick each one when it is true.</p>
           <div className="grid3">
             {SETUP.map((c, i) => (
               <div className="card rvi" key={c.id} style={{ ['--i' as string]: 2 + i }}>
@@ -474,12 +475,12 @@ export default function AtoWorkshop() {
                 {c.id === 'c3' && (
                   <div className="field">
                     <span className="links">
-                      <a href={`https://github.com/${BASE_REPO}/fork`} target="_blank" rel="noreferrer">Fork on GitHub ↗</a>
+                      <a href={`https://github.com/${BASE_REPO}`} target="_blank" rel="noreferrer">Starter repo on GitHub ↗</a>
                       <a href={ZIP_URL} target="_blank" rel="noreferrer">No git? Download ZIP ↗</a>
                     </span>
                     <label htmlFor="atows-clone">Your folder</label>
                     <input id="atows-clone" value={clone} spellCheck={false} onChange={(e) => setClone(e.target.value)} />
-                    <small>The guide works only in this folder. ZIP: unzip it, then use <code>~/Downloads/ato-2026-dup-triage-main</code>.</small>
+                    <small>Clone: <code>git clone https://github.com/{BASE_REPO} ~/ato-2026-dup-triage</code>. ZIP: unzip it, then use <code>~/Downloads/ato-2026-dup-triage-main</code>. The guide works only in this folder.</small>
                   </div>
                 )}
               </div>
@@ -536,7 +537,7 @@ export default function AtoWorkshop() {
             </div>
           </div>
           <details className="real">
-            <summary>Where each part is in Dup Detective (Lab 3)</summary>
+            <summary>Where each part is in Backlog Factory (Lab 3)</summary>
             <ul>
               {[...PLUGIN, ...APP_PARTS].map((t) => (
                 <li key={t.k}><b>{t.k}</b> <code>{t.real}</code></li>
@@ -581,7 +582,7 @@ export default function AtoWorkshop() {
               <ul>
                 <li>It types for you: copies files, writes your skill, runs the install.</li>
                 <li>It asks <b>yes / no</b> before every change.</li>
-                <li>It never writes to GitHub. You push to your own fork.</li>
+                <li>It never writes to GitHub. Today everything stays in your folder.</li>
                 <li>You trust and enable each app yourself, in Library.</li>
               </ul>
             </div>

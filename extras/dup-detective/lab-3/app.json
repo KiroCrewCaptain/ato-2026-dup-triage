@@ -1,0 +1,51 @@
+{
+  "name": "dup-triage",
+  "version": "0.3.0",
+  "displayName": "Dup Detective",
+  "description": "Finds likely duplicate GitHub issues and explains every match. Drafts by default; posts one comment, only on your own fork, only after your yes.",
+  "author": "ATO 2026 workshop",
+  "license": "Apache-2.0",
+  "iconPath": "assets/icon.png",
+  "agents": [
+    "agents/dup-triage.json"
+  ],
+  "skills": [
+    "skills/dup-triage"
+  ],
+  "tags": [
+    "github",
+    "triage"
+  ],
+  "ui": {
+    "entry": "dist/index.mjs",
+    "pages": [
+      {
+        "route": "/apps/dup-triage",
+        "label": "Dup Detective",
+        "icon": "Package"
+      }
+    ]
+  },
+  "crons": [
+    {
+      "name": "dup-triage-daily",
+      "cron_expr": "0 7 * * 1-5",
+      "timezone": "America/New_York",
+      "message": "Use the dup-triage skill on the open issues of KiroCrewCaptain/ato-2026-dup-triage. Write dup-triage-report.md. Post nothing.",
+      "enabled": false
+    }
+  ],
+  "permissions": {
+    "api": [
+      "/api/crons"
+    ],
+    "cron": true
+  },
+  "platform": {
+    "os": [
+      "macos",
+      "linux",
+      "windows"
+    ]
+  }
+}

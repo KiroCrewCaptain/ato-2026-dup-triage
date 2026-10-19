@@ -19,20 +19,21 @@ you through building your own app, and its guide agent does the typing.
 **Fallback: No git? Download ZIP** (tested on a machine with no `git`, about 20 seconds):
 
 1. Download [the repo as a ZIP](https://github.com/KiroCrewCaptain/ato-2026-dup-triage/archive/refs/heads/main.zip)
-   and unzip it. You get `ato-2026-dup-triage-main/`. (Or clone your fork.)
+   and unzip it. You get `ato-2026-dup-triage-main/`.
 2. **Discover** → database icon → **Install from Path** → paste the full path of
    its `ato-2026-workshop` folder, for example
    `/Users/you/Downloads/ato-2026-dup-triage-main/ato-2026-workshop` → **Install**.
 3. **Library** → **Show N disabled apps** → **ATO 2026 Workshop** → **⋯** →
    **Enable** → **Trust this app and enable**.
 
-The guide works in the unzipped folder: Steps 1–6 need no git. Step 7 shares
-your app through GitHub's web upload instead of `git push`.
+The guide works in the unzipped folder: Labs 1 and 2 need no git. Lab 3 (fix and
+review on a local branch) needs git.
 
 Terminal instead of fallback step 2: `kirocrew app install "$PWD/ato-2026-workshop"`
 (run from your clone). You still trust and enable it in the dashboard.
 
-You still need your own fork and clone for the labs: the guide builds your app there.
+No fork needed. The guide builds your app, **Backlog Factory**, inside this same
+clone or ZIP folder, and nothing is written to GitHub.
 
 ## What is inside
 
@@ -46,8 +47,8 @@ You still need your own fork and clone for the labs: the guide builds your app t
 
 ## What the guide will and won't do
 
-- It types for you: copies the lab checkpoint into `dup-triage/`, writes your
-  remix skill, runs `kirocrew app install`.
+- It types for you: copies the lab checkpoint into `backlog-factory/`, edits your
+  remix rule, runs `kirocrew app install`.
 - It asks **yes / no** before every file change, install or commit.
 - It never writes to GitHub: no push, no comments, no issues or PRs.
 - It never trusts or enables an app. You do that in **Library**.

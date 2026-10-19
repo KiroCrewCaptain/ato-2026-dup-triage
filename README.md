@@ -1,18 +1,26 @@
-# Build Your First Kiro Crew App: dup-triage
+# Build Your First Kiro Crew App: Backlog Factory
 
 Starter repo for the All Things Open 2026 workshop
-**"Build Your First Kiro Crew App: An Agent That Triages Your Backlog While You Sleep"**
+**"Build Your First Kiro Crew App: An agentic app that triages your GitHub backlog"**
 (Mon Oct 19, 2:30–4:30 PM ET, Room 304).
 
-In two hours you build `dup-triage`, a [Kiro Crew](https://github.com/kirodotdev/KiroCrew)
-app that finds duplicate GitHub issues and explains each match. It remembers
-its verdicts, fans the work out to subagents, runs on a schedule, and never
-writes to GitHub without your yes. Everything happens in the room. Nothing is
-left over for later.
+In two hours you build **Backlog Factory**, a [Kiro Crew](https://github.com/kirodotdev/KiroCrew)
+app that works through a real issue backlog like a small software factory:
 
-The issues come from `jot`, a tiny notes CLI in this repo (`jot/`, `JOT.md`).
-They are the kind every open-source maintainer gets: the same bug in different
-words, from different OSes and versions.
+1. **Sort** every open issue: bug or feature? Is it a good problem? Five whys to the
+   root cause, then first principles to the best fix. Verdict: Build, Reframe,
+   Needs you, or Reject. Duplicates are grouped.
+2. **Reproduce** each bug in your own folder, with the real command and its output.
+3. **Fix ⇄ Review**: a fixer agent writes the fix on a local branch, a separate
+   reviewer agent reads the diff and runs the tests, and they loop until the review
+   is green. Then **you** merge.
+
+Its page is a board with a count per lane. **It never writes to GitHub**: it reads the
+issues, and everything it makes stays in your folder (fixes are local branches; a
+"PR" here is a branch, its diff and the review verdict).
+
+The issues come from `jot`, a tiny notes CLI in this repo (`jot/`, `JOT.md`): 100 open
+issues, the kind every open-source maintainer gets.
 
 ## Before you arrive (about 20 minutes, ~1 GB of downloads)
 
@@ -32,155 +40,103 @@ words, from different OSes and versions.
 
 2. **Sign in.** The dashboard opens on the **Set up Kiro** page. Copy the
    sign-in command shown there, run it in a terminal, finish the sign-in in
-   your browser, then press **Check sign-in again**. Use the command exactly
-   as the page shows it; do not type your own path.
-3. **Sign GitHub in, read-only.** Create a fine-grained personal access token
-   (GitHub → Settings → Developer settings → Personal access tokens →
-   Fine-grained tokens) with **Public repositories** read-only access. Then:
+   your browser, then press **Check sign-in again**.
+3. **Python 3.9 or newer.** The factory runs `jot` to reproduce bugs. Check with
+   `python3 --version` (Windows: `py --version`). On a fresh Mac, `python3` may first
+   offer to install Apple's developer tools: say yes (this also gives you `git`).
+4. **git** (for Lab 3 only). No git? Labs 1 and 2 still work from the ZIP.
 
-   ```bash
-   gh auth login --with-token     # paste the token, then press Ctrl-D
-   gh auth status
-   ```
-
-4. **Optional: Node.js 24 LTS.** Only needed to rebuild the Lab 3 page. The
-   page ships pre-built, so you can skip this.
+No GitHub account, token or fork is needed today.
 
 ## Start here (first 5 minutes)
 
-1. **Fork** this repo on GitHub.
-2. **Clone your fork** and go into it:
+1. **Get the repo** (no fork):
 
    ```bash
-   git clone https://github.com/YOUR-USER/ato-2026-dup-triage.git
-   cd ato-2026-dup-triage
+   git clone https://github.com/KiroCrewCaptain/ato-2026-dup-triage.git ~/ato-2026-dup-triage
    ```
 
-   **No git? Download ZIP:** on your fork, **Code → Download ZIP**, then unzip it.
-   Use that folder (for example `~/Downloads/ato-2026-dup-triage-main`) wherever
-   this handout says "your clone".
+   **No git? Download ZIP:** [the repo as a ZIP](https://github.com/KiroCrewCaptain/ato-2026-dup-triage/archive/refs/heads/main.zip),
+   unzip it, and use that folder (for example `~/Downloads/ato-2026-dup-triage-main`)
+   wherever this handout says "your folder".
 
-3. **Open it** in Kiro Crew: start a dashboard chat with this folder as its
-   project folder.
-4. **Install the ATO 2026 Workshop app** from GitHub. It is your guide for
-   the rest of the session. It takes about 20 seconds:
+2. **Install the ATO 2026 Workshop app.** It is your guide for the rest of the session.
+   About 20 seconds:
    **Discover** → database icon (**Manage app sources**) → **Add Registry** →
    Repo `https://github.com/KiroCrewCaptain/ato-2026-dup-triage` → **Add Registry**.
    The app list shows **ATO 2026 Workshop** → **Install** → **Trust this app
    and enable** → **Enable** on the app page. Open **ATO 2026 Workshop** in the
-   sidebar and follow its steps. No GitHub sign-in is needed, but `git` must be
-   installed.
-   No `git`, or GitHub blocked? **No git? Download ZIP:**
-   [the repo as a ZIP](https://github.com/KiroCrewCaptain/ato-2026-dup-triage/archive/refs/heads/main.zip),
-   unzip it (you get `ato-2026-dup-triage-main/`), then **Install from Path** in the
-   same menu with the full path of its `ato-2026-workshop/` folder, then **Library** →
-   **Show N disabled apps** → **ATO 2026 Workshop** → **⋯** → **Enable** → **Trust this
-   app and enable**. The guide works in the unzipped folder too: Steps 1–6 need no git,
-   and Step 7 shares through GitHub's web upload. Details: [ato-2026-workshop/README.md](ato-2026-workshop/README.md).
+   sidebar and follow its steps. This path needs `git`.
+   No `git`? In the same menu use **Install from Path** with the full path of the
+   unzipped `ato-2026-workshop/` folder, then **Library** → **Show N disabled apps** →
+   **ATO 2026 Workshop** → **⋯** → **Enable** → **Trust this app and enable**.
+   Details: [ato-2026-workshop/README.md](ato-2026-workshop/README.md).
 
-### Read this once: forks do not copy issues
-
-GitHub forks copy code, not issues. So:
-
-- The app **reads** issues from the base repo `KiroCrewCaptain/ato-2026-dup-triage`
-  (public, read-only for you), or from `data/issues.json` in your clone.
-- You never write to the base repo.
-- To practice posting a comment, open your own issue in **your fork**. Turn
-  Issues on first: your fork → Settings → General → Features → Issues. The
-  app posts only there, and only after you approve it.
+**Dry run, always.** The whole room shares this one GitHub repo, so nothing you build
+today writes to it: no labels, comments, closes or pull requests. Backlog Factory reads
+the issues (one unauthenticated GitHub call, or `data/issues.json` offline) and writes
+only inside your folder.
 
 ### Offline fallback
 
-`data/issues.json` is the base repo's issues, in exactly the shape
-`gh issue list --limit 100 --json number,title,body,labels` returns. Use it when Wi-Fi or
-GitHub is slow.
+`data/issues.json` holds the repo's open issues, in the shape
+`gh issue list --json number,title,body,labels` returns. The factory uses it when the
+GitHub call fails. **Offline issue data does not make the model work offline.**
 
-**Offline issue data does not make the model work offline.** The agent still
-needs the internet to reach the model.
+## The labs (about 70 minutes)
 
-To fetch the live issues (all of them; the default limit is 30):
+The guide app does the typing: each step button opens a chat that copies the next
+checkpoint into `backlog-factory/` in your folder and installs it, after your yes.
 
-```bash
-gh issue list -R KiroCrewCaptain/ato-2026-dup-triage --state open --limit 100 \
-  --json number,title,body,labels > issues.json
-```
+| Lab | Time | Your app gains | You should see |
+|---|---|---|---|
+| 1 Sort | 25 min | the main agent, the `factory-triage` skill (good problem? → five whys → first principles), the board page and its small backend | a board with 100 cards; each has a verdict and a one-line reason |
+| 2 Reproduce | 20 min | the `factory-reproduce` skill; helper agents (subagents) in batches | bugs with a real command and real output; Windows-only ones under **Needs you** |
+| 3 Fix ⇄ Review | 25 min | two more agents, `factory-fixer` and `factory-reviewer`, and the `factory-fix-review` skill | one bug in **Ready to merge** with green tests; you run the merge yourself |
 
-## The labs
-
-Each lab follows the slides. When you finish a lab, compare your report with
-**[answer-key.md](answer-key.md)**. That is the Check step.
-
-### Lab 1: Find duplicates and explain each match (2:55–3:30 PM ET)
-
-Scaffold the app with `kirocrew app init dup-triage --cron`, write the skill,
-install it, and get a report that explains every match. See the slides.
-
-### Lab 2: Memory and background subagents (3:40–4:00 PM ET)
-
-Make it remember verdicts and fan the work out to subagents. See the slides.
-
-### Lab 3: Schedule, permission boundary, and a page (4:00–4:18 PM ET)
-
-Put it on a schedule, add the approval boundary, add its page. See the slides.
+Then remix it (add your own rule or lane) and share it (a zip of your app folder).
+Check each lab against **[answer-key.md](answer-key.md)**.
 
 ### Fell behind? Copy the next checkpoint
 
-`checkpoints/lab-1/`, `lab-2/` and `lab-3/` are the whole `dup-triage` app
-folder as it should look at the end of each lab. Each has a README with its
-install steps. macOS / Linux:
+`checkpoints/lab-1/`, `lab-2/` and `lab-3/` are the whole `backlog-factory` app folder
+as it should look at the end of each lab. macOS / Linux:
 
 ```bash
-rm -rf dup-triage && cp -R checkpoints/lab-2 dup-triage
-kirocrew app uninstall dup-triage      # only if an older copy is installed
-kirocrew app install "$PWD/dup-triage"
+rm -rf backlog-factory && cp -R checkpoints/lab-2 backlog-factory
+kirocrew app uninstall backlog-factory      # only if an older copy is installed
+kirocrew app install "$PWD/backlog-factory"
 ```
 
 Windows PowerShell:
 
 ```powershell
-Remove-Item -Recurse -Force dup-triage -ErrorAction SilentlyContinue
-Copy-Item -Recurse checkpoints\lab-2 dup-triage
-kirocrew app uninstall dup-triage
-kirocrew app install "$PWD\dup-triage"
+Remove-Item -Recurse -Force backlog-factory -ErrorAction SilentlyContinue
+Copy-Item -Recurse checkpoints\lab-2 backlog-factory
+kirocrew app uninstall backlog-factory
+kirocrew app install "$PWD\backlog-factory"
 ```
 
-Then trust and enable it in the dashboard: **Apps → Library → Show N disabled
-apps → Dup Detective → ⋯ → Enable → Trust this app and enable**. Do **not** turn on
-*Trust every third-party app* in Settings: that admits every third-party app,
-not just this one. (Settings → Security → Third-party apps is where you remove
-trust later.) An uninstall removes the trust, so trust it again after each
-reinstall. If the app is already trusted, `kirocrew app enable dup-triage`
-enables it from the terminal.
-
-### Finished early? Remix your app
-
-Give your app a second rule. Two are ready in `checkpoints/remix/skills/`:
-
-- **Missing-Info Nudger** (`missing-info-nudger/`): finds bug reports with no
-  version, OS or steps, and drafts a friendly reply asking for exactly what is
-  missing.
-- **Good First Issue Scout** (`good-first-issue-scout/`): finds small,
-  one-file issues and suggests GitHub's `good first issue` label.
-
-To add one: copy its folder into `dup-triage/skills/`, add its path to
-`"skills"` in `dup-triage/app.json` (for example
-`"skills/missing-info-nudger"`), then reinstall, trust and enable as above. No agent edit: the agent's
-`"resources"` line already maps every skill in the app.
-`answer-key.md` lists the expected issues for both.
+Then trust and enable it in the dashboard: **Library → Show N disabled apps →
+Backlog Factory → ⋯ → Enable → Trust this app and enable**. The app has a small
+backend (it serves the board), so it asks for trust. Do **not** turn on *Trust every
+third-party app* in Settings. An uninstall removes the trust, so trust it again after
+each reinstall. On the app's page, set **Repo folder** to your folder and press **Save**
+once; it is kept across reinstalls.
 
 ## What the app may and may not do
 
 | | Allowed |
 |---|---|
-| Read issues from `KiroCrewCaptain/ato-2026-dup-triage` or `data/issues.json` | yes |
-| Write `dup-triage-report.md` and `dup-triage-verdicts.json` on your machine | yes |
-| Write anything to `KiroCrewCaptain/ato-2026-dup-triage` | never |
-| Post from a scheduled run | never |
-| Post one comment on an issue in **your fork** | only after it shows you the command and you say yes |
+| Read the open issues of `KiroCrewCaptain/ato-2026-dup-triage` (or `data/issues.json`) | yes |
+| Write `factory/` in your folder: the board, repro notes, saved diffs, fix worktrees | yes, after your yes |
+| Make local branches `factory/fix-<n>` | yes (Lab 3), after your yes |
+| Merge a fix into your `main` | never: you do it |
+| Write anything to GitHub (labels, comments, closes, PRs, pushes) | never |
 
-Your read-only token from the pre-work cannot post at all. To try posting on
-your fork, make a second fine-grained token for **only your fork** with
-**Issues: Read and write**.
+**Want real writes? (after the workshop, not today.)** Fork the repo, point the
+factory at your fork, and add your own "apply" step that labels or comments, behind
+an explicit yes. Today's app stays a dry run.
 
 ## What is in this repo
 
@@ -188,11 +144,12 @@ your fork, make a second fine-grained token for **only your fork** with
 README.md            this handout
 ato-2026-workshop/   the ATO 2026 Workshop app: guide page + guide agent (install first)
 app-registry.json    lists ato-2026-workshop, so this repo also works as a Kiro Crew app registry
-answer-key.md        expected duplicate groups, near-misses, remix lists
-data/issues.json     offline copy of the base repo's open issues
-seed/issues.json     the issues as written (used to seed the base repo)
+answer-key.md        the expected board: bug groups, verdicts, reframes
+checkpoints/         lab-1, lab-2, lab-3: the Backlog Factory app folder after each lab
+data/issues.json     offline copy of the open issues
+seed/issues.json     the first 45 issues as written (used to seed the repo)
 scripts/             seed-issues.sh, refresh-offline-data.sh, build-offline-data.py
-checkpoints/         lab-1, lab-2, lab-3 app folders; remix/skills
+extras/dup-detective the earlier Dup Detective app (find duplicate issues), kept as an example
 jot/, tests/, JOT.md the sample project the issues are about
 ```
 

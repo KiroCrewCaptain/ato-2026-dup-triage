@@ -76,7 +76,7 @@ var STEPS = [
     n: 1,
     title: "Check your setup",
     ghost: "pose-1.svg",
-    does: "The guide looks at your clone, your fork and the kirocrew command. It only reads.",
+    does: "The guide looks at your repo folder, Python, git and the kirocrew command. It only reads.",
     see: "A short checklist that ends with \u201CAll set, press Step 2\u201D."
   },
   {
@@ -85,67 +85,68 @@ var STEPS = [
     lab: "Lab 1",
     title: "Build your app",
     ghost: "pose-3.svg",
-    does: "The guide copies Lab 1 into dup-triage/ and installs your app, after your yes.",
-    see: "Dup Detective in Library. You trust and enable it there."
+    does: "The guide copies Lab 1 into backlog-factory/ and installs your app, after your yes.",
+    see: "Backlog Factory in the sidebar, after you trust and enable it in Library."
   },
   {
     id: "s3",
     n: 3,
     lab: "Lab 1",
-    title: "First run and check",
+    title: "Sort the backlog",
     ghost: "pose-5.svg",
-    does: "You chat with your app\u2019s agent, dup-triage. The guide scores its report against the answer key.",
-    see: "dup-triage-report.md with duplicate groups, each with a quote from both issues."
+    does: "Press Run now on your app\u2019s page. Its agent asks: good problem? five whys? first principles?",
+    see: "A board with lanes and counts. Each card has a verdict and a one-line reason."
   },
   {
     id: "s4",
     n: 4,
     lab: "Lab 2",
-    title: "Memory and helpers",
+    title: "Reproduce with helpers",
     ghost: "pose-7.svg",
-    does: "Your app gets memory: its agent keeps its verdicts and splits big lists across helper agents.",
-    see: "The second run says \u201CN reused\u201D. Each helper waits for your Allow."
+    does: "Your app splits the bugs across helper agents. Each runs jot in your folder and pastes the real output.",
+    see: "Bugs with a real command and output. Each helper waits for your Allow."
   },
   {
     id: "s5",
     n: 5,
     lab: "Lab 3",
-    title: "Schedule, boundary and a page",
+    title: "Fix \u21C4 Review",
     ghost: "pose-8.svg",
-    does: "Your app gets a paused weekday cron job, a post-only-on-your-fork rule, and its own page.",
-    see: "A Dup Detective page in the sidebar. The schedule shows Paused."
+    does: "A fixer and a separate reviewer loop on a local branch until the review is green. Needs git.",
+    see: "A card in Ready to merge. You read the diff and you merge."
   },
   {
     id: "s6",
     n: 6,
     title: "Remix it into your idea",
     ghost: "wave.svg",
-    does: "Tell the guide your idea. It writes a new skill into your app and reinstalls.",
-    see: "Your own skill inside your app. Try it in a chat with dup-triage."
+    does: "Tell the guide your rule or lane. It edits your app\u2019s skill and reinstalls.",
+    see: "Your own rule on the board after the next Run now."
   },
   {
     id: "s7",
     n: 7,
     title: "Share it",
     ghost: "pose-1.svg",
-    does: "The guide commits your app on a branch. You push it to your fork yourself.",
-    see: "Your app in your fork. A friend clones it and installs the dup-triage/ folder."
+    does: "The guide zips your app folder. Nothing goes to GitHub today.",
+    see: "backlog-factory.zip. A friend installs it with Install from Path."
   }
 ];
 var SETUP = [
   { id: "c1", title: "Kiro Crew installed", hint: "You are reading this page, so yes." },
   { id: "c2", title: "Signed in", hint: "The Set up Kiro page is done and a chat answers." },
-  { id: "c3", title: "Your fork, cloned (or the ZIP)", hint: "Fork the starter repo on GitHub, then clone your fork. No git? Download the ZIP." }
+  { id: "c3", title: "Repo cloned (or ZIP downloaded)", hint: "git clone the starter repo into ~/ato-2026-dup-triage. No git? Download the ZIP and unzip it: ato-2026-dup-triage-main." },
+  { id: "c4", title: "Python 3.9 or newer", hint: "The factory runs jot to reproduce bugs. Check: python3 --version (Windows: py --version)." }
 ];
 var PLUGIN = [
-  { k: "Skill", code: "skills/", real: "skills/dup-triage" },
+  { k: "Skill", code: "skills/", real: "skills/factory-triage" },
   { k: "MCP", code: "mcpServers", real: "optional: none of its own" }
 ];
 var APP_PARTS = [
-  { k: "Cron jobs", code: "crons", real: "dup-triage-daily, paused" },
-  { k: "Memory", code: "verdicts file", real: "dup-triage-verdicts.json" },
-  { k: "Harness API", code: "@kirocrew-core", real: "spawn_run \xB7 /api/crons" },
-  { k: "UI bundle", code: "ui/dist", real: "its own page" }
+  { k: "Cron jobs", code: "crons", real: "factory-weekday, paused" },
+  { k: "Memory", code: "board file", real: "factory/board.json" },
+  { k: "Harness API", code: "@kirocrew-core", real: "spawn_run \xB7 spawn_continue" },
+  { k: "UI bundle", code: "ui/dist + backend", real: "the board page" }
 ];
 var OS_MAP = [
   ["OS", "Kiro Crew"],
@@ -500,7 +501,7 @@ function AtoWorkshop() {
             }),
             li === 0 && /* @__PURE__ */ jsx("br", {})
           ] }, li)) }),
-          /* @__PURE__ */ jsx("p", { className: "tag rise", style: { ["--d"]: ".6s" }, children: "An agentic app that triages your backlog while you sleep" }),
+          /* @__PURE__ */ jsx("p", { className: "tag rise", style: { ["--d"]: ".6s" }, children: "An agentic software factory that turns GitHub issues into reviewed fixes" }),
           /* @__PURE__ */ jsx("ul", { className: "facts", "aria-label": "Session facts", children: ["Mon, Oct 19, 2026", "2:30\u20134:30 PM ET", "Room 304"].map((f, i) => /* @__PURE__ */ jsx("li", { style: { ["--d"]: `${0.7 + 0.07 * i}s` }, children: f }, f)) }),
           /* @__PURE__ */ jsxs("p", { className: "people rise", style: { ["--d"]: ".92s" }, children: [
             "With ",
@@ -518,7 +519,7 @@ function AtoWorkshop() {
     /* @__PURE__ */ jsxs("div", { className: "wrap", children: [
       /* @__PURE__ */ jsxs("div", { className: "track", ref: trackRef, role: "group", "aria-label": "Workshop progress", children: [
         /* @__PURE__ */ jsxs("div", { className: "lbl", children: [
-          /* @__PURE__ */ jsx("span", { children: nextStep ? `Next: Step ${nextStep.n} \u2014 ${nextStep.title}` : "All steps done. Share your fork!" }),
+          /* @__PURE__ */ jsx("span", { children: nextStep ? `Next: Step ${nextStep.n} \u2014 ${nextStep.title}` : "All steps done. Share your app!" }),
           /* @__PURE__ */ jsxs("span", { children: [
             count,
             " of ",
@@ -539,7 +540,7 @@ function AtoWorkshop() {
       ] }),
       /* @__PURE__ */ jsxs("section", { className: "s rv", "aria-labelledby": "setup-h", children: [
         /* @__PURE__ */ jsx("h2", { id: "setup-h", className: "rvi", children: "Before you start" }),
-        /* @__PURE__ */ jsx("p", { className: "lead rvi", style: { ["--i"]: 1 }, children: "Three things. Tick each one when it is true." }),
+        /* @__PURE__ */ jsx("p", { className: "lead rvi", style: { ["--i"]: 1 }, children: "Four things. Tick each one when it is true." }),
         /* @__PURE__ */ jsx("div", { className: "grid3", children: SETUP.map((c, i) => /* @__PURE__ */ jsxs("div", { className: "card rvi", style: { ["--i"]: 2 + i }, children: [
           /* @__PURE__ */ jsxs("label", { className: "check", children: [
             /* @__PURE__ */ jsx(Check, { checked: !!setup[c.id], onChange: () => toggleSetup(c.id) }),
@@ -550,15 +551,21 @@ function AtoWorkshop() {
           ] }),
           c.id === "c3" && /* @__PURE__ */ jsxs("div", { className: "field", children: [
             /* @__PURE__ */ jsxs("span", { className: "links", children: [
-              /* @__PURE__ */ jsx("a", { href: `https://github.com/${BASE_REPO}/fork`, target: "_blank", rel: "noreferrer", children: "Fork on GitHub \u2197" }),
+              /* @__PURE__ */ jsx("a", { href: `https://github.com/${BASE_REPO}`, target: "_blank", rel: "noreferrer", children: "Starter repo on GitHub \u2197" }),
               /* @__PURE__ */ jsx("a", { href: ZIP_URL, target: "_blank", rel: "noreferrer", children: "No git? Download ZIP \u2197" })
             ] }),
             /* @__PURE__ */ jsx("label", { htmlFor: "atows-clone", children: "Your folder" }),
             /* @__PURE__ */ jsx("input", { id: "atows-clone", value: clone, spellCheck: false, onChange: (e) => setClone(e.target.value) }),
             /* @__PURE__ */ jsxs("small", { children: [
-              "The guide works only in this folder. ZIP: unzip it, then use ",
+              "Clone: ",
+              /* @__PURE__ */ jsxs("code", { children: [
+                "git clone https://github.com/",
+                BASE_REPO,
+                " ~/ato-2026-dup-triage"
+              ] }),
+              ". ZIP: unzip it, then use ",
               /* @__PURE__ */ jsx("code", { children: "~/Downloads/ato-2026-dup-triage-main" }),
-              "."
+              ". The guide works only in this folder."
             ] })
           ] })
         ] }, c.id)) })
@@ -611,7 +618,7 @@ function AtoWorkshop() {
           ] })
         ] }),
         /* @__PURE__ */ jsxs("details", { className: "real", children: [
-          /* @__PURE__ */ jsx("summary", { children: "Where each part is in Dup Detective (Lab 3)" }),
+          /* @__PURE__ */ jsx("summary", { children: "Where each part is in Backlog Factory (Lab 3)" }),
           /* @__PURE__ */ jsx("ul", { children: [...PLUGIN, ...APP_PARTS].map((t) => /* @__PURE__ */ jsxs("li", { children: [
             /* @__PURE__ */ jsx("b", { children: t.k }),
             " ",
@@ -669,7 +676,7 @@ function AtoWorkshop() {
               /* @__PURE__ */ jsx("b", { children: "yes / no" }),
               " before every change."
             ] }),
-            /* @__PURE__ */ jsx("li", { children: "It never writes to GitHub. You push to your own fork." }),
+            /* @__PURE__ */ jsx("li", { children: "It never writes to GitHub. Today everything stays in your folder." }),
             /* @__PURE__ */ jsx("li", { children: "You trust and enable each app yourself, in Library." })
           ] })
         ] })

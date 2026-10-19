@@ -1,33 +1,27 @@
-# dup-triage: checkpoint after Lab 2
+# Backlog Factory, Lab 2: Reproduce
 
-Adds to Lab 1:
+The app after Lab 2 (v0.2.0) = Lab 1 plus:
 
-- **Memory**: verdicts are kept in `dup-triage-verdicts.json`. A second run
-  reuses a verdict when neither issue changed, and the report says how many
-  pairs it reused.
-- **Subagents**: more than 12 issues are split into batches of about 12. One
-  background subagent runs per batch (`spawn_run`), and the main agent checks
-  and merges their candidates.
-- `agents/dup-triage.json` gains `@kirocrew-core` (the spawn and memory tools).
-- `app.json` version `0.2.0`. The schedule is still paused.
+| Part | What it does |
+|---|---|
+| `skills/factory-reproduce/SKILL.md` | for each bug: run jot with a throwaway notes file, paste the real output, add the root cause; helpers in batches |
+| `agents/backlog-factory.json` | gains `@kirocrew-core`, so it can start helper agents (`spawn_run`) |
 
-## Use this checkpoint
+Each helper waits for your OK: **Review in panel → Allow**. A re-run only does new
+work: the board is the memory.
 
-From the root of your clone:
+## Install
 
-```bash
-rm -rf dup-triage && cp -R checkpoints/lab-2 dup-triage
-kirocrew app uninstall dup-triage      # only if an older copy is installed
-kirocrew app install "$PWD/dup-triage"
-```
-
-Trust it in the dashboard: Apps → Library → Show N disabled apps → Dup Detective → ⋯ → Enable → **Trust this app and enable**. Do not turn on *Trust every third-party app* in Settings. Once trusted, the terminal also works:
+From your folder (macOS / Linux):
 
 ```bash
-kirocrew app enable dup-triage
+rm -rf backlog-factory && cp -R checkpoints/lab-2 backlog-factory
+kirocrew app uninstall backlog-factory      # only if an older copy is installed
+kirocrew app install "$PWD/backlog-factory"
 ```
 
-## Check
+Then **Library → Show N disabled apps → Backlog Factory → ⋯ → Enable → Trust this app
+and enable**. Open **Backlog Factory** in the sidebar, set **Repo folder**, press
+**Save**, then **Run now**.
 
-Run it twice on `data/issues.json`. The first report shows the subagents.
-The second shows reused verdicts. `kirocrew spawn list` shows the subagent runs.
+Nothing here writes to GitHub. The factory writes only `factory/` in your folder.
