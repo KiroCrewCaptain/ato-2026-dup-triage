@@ -56,6 +56,10 @@ words, from different OSes and versions.
    cd ato-2026-dup-triage
    ```
 
+   **No git? Download ZIP:** on your fork, **Code → Download ZIP**, then unzip it.
+   Use that folder (for example `~/Downloads/ato-2026-dup-triage-main`) wherever
+   this handout says "your clone".
+
 3. **Open it** in Kiro Crew: start a dashboard chat with this folder as its
    project folder.
 4. **Install the ATO 2026 Workshop app** from GitHub. It is your guide for
@@ -66,10 +70,13 @@ words, from different OSes and versions.
    and enable** → **Enable** on the app page. Open **ATO 2026 Workshop** in the
    sidebar and follow its steps. No GitHub sign-in is needed, but `git` must be
    installed.
-   No `git`, or GitHub blocked? Use **Install from Path** in the same menu with
-   the full path of `ato-2026-workshop/` in your clone, then **Library** → **Show
-   N disabled apps** → **ATO 2026 Workshop** → **⋯** → **Enable** → **Trust this
-   app and enable**. Details: [ato-2026-workshop/README.md](ato-2026-workshop/README.md).
+   No `git`, or GitHub blocked? **No git? Download ZIP:**
+   [the repo as a ZIP](https://github.com/KiroCrewCaptain/ato-2026-dup-triage/archive/refs/heads/main.zip),
+   unzip it (you get `ato-2026-dup-triage-main/`), then **Install from Path** in the
+   same menu with the full path of its `ato-2026-workshop/` folder, then **Library** →
+   **Show N disabled apps** → **ATO 2026 Workshop** → **⋯** → **Enable** → **Trust this
+   app and enable**. The guide works in the unzipped folder too: Steps 1–6 need no git,
+   and Step 7 shares through GitHub's web upload. Details: [ato-2026-workshop/README.md](ato-2026-workshop/README.md).
 
 ### Read this once: forks do not copy issues
 

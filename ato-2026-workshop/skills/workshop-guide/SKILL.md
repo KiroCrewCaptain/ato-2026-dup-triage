@@ -59,7 +59,9 @@ Do that one step, then stop.
 ## Paths
 
 - `CLONE` = the clone folder from the message (for example
-  `~/ato-2026-dup-triage`). Expand `~` with `echo "$HOME"` first and use the
+  `~/ato-2026-dup-triage`). It may be an unzipped GitHub ZIP instead of a git
+  clone (`ato-2026-dup-triage-main`, no `.git` folder). That is fine: Steps 1–6
+  need no git. Only Step 7 changes. Expand `~` with `echo "$HOME"` first and use the
   absolute path in every command.
 - `APP` = `CLONE/dup-triage` (the person's own app folder).
 - Checkpoints: `CLONE/checkpoints/lab-1`, `lab-2`, `lab-3`; remix skills in
@@ -102,10 +104,14 @@ path instead: **Discover → database icon (Manage app sources) → Install from
 Run, then report in a short checklist:
 
 - `ls "CLONE"` — the clone exists and has `checkpoints/` and `data/issues.json`.
-- `git -C "CLONE" remote -v` — `origin` is the person's **fork**
-  (`github.com/<them>/ato-2026-dup-triage`), not `KiroCrewCaptain/...`. If it
-  is the base repo, tell them to fork on GitHub and clone the fork; it still
-  works offline, but they cannot share later.
+- `command -v git` and `ls -a "CLONE"` — is git installed, and is `CLONE` a git
+  clone (has `.git`)? If either is no, say "ZIP copy, no git: fine for Steps
+  1–6. Step 7 uses GitHub's web upload." and skip the next check. Do not ask
+  them to install git.
+- `git -C "CLONE" remote -v` (only with git and `.git`) — `origin` is the
+  person's **fork** (`github.com/<them>/ato-2026-dup-triage`), not
+  `KiroCrewCaptain/...`. If it is the base repo, tell them to fork on GitHub;
+  everything works, but they share through their fork later.
 - `kirocrew --version` and `kirocrew app list` — the CLI works. If not, the
   click path in "Install / reinstall" still works.
 - `gh auth status` (optional) — read-only token is enough; offline data works too.
@@ -207,3 +213,10 @@ git -C "CLONE" push -u origin my-app
 and how a friend installs it: clone your fork, then **Discover → database icon (Manage app sources) →
 Install from Path →** `<their clone>/dup-triage`, then trust and enable.
 Finish with: "Share your fork link in the room chat."
+
+**No git, or a ZIP copy (no `.git`)?** Skip the commands above. Tell them to
+share through the GitHub website instead (they do it, you never upload):
+open **their fork** on github.com → **Add file → Upload files** → drag the
+whole `dup-triage` folder from `CLONE` → **Commit changes**. A friend then
+downloads the ZIP of that fork and uses **Install from Path** with its
+`dup-triage` folder.

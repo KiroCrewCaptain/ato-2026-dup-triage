@@ -16,14 +16,18 @@ you through building your own app, and its guide agent does the typing.
 5. The app page opens with "Install complete" → **Enable**.
    **ATO 2026 Workshop** now shows in the sidebar. Open it.
 
-**Fallback: Install from Path** (no `git`, or GitHub blocked):
+**Fallback: No git? Download ZIP** (tested on a machine with no `git`, about 20 seconds):
 
-1. Get the repo onto the laptop: clone your fork, or **Code → Download ZIP** and unzip.
+1. Download [the repo as a ZIP](https://github.com/KiroCrewCaptain/ato-2026-dup-triage/archive/refs/heads/main.zip)
+   and unzip it. You get `ato-2026-dup-triage-main/`. (Or clone your fork.)
 2. **Discover** → database icon → **Install from Path** → paste the full path of
-   this folder, for example `/Users/you/ato-2026-dup-triage/ato-2026-workshop`
-   → **Install**.
+   its `ato-2026-workshop` folder, for example
+   `/Users/you/Downloads/ato-2026-dup-triage-main/ato-2026-workshop` → **Install**.
 3. **Library** → **Show N disabled apps** → **ATO 2026 Workshop** → **⋯** →
    **Enable** → **Trust this app and enable**.
+
+The guide works in the unzipped folder: Steps 1–6 need no git. Step 7 shares
+your app through GitHub's web upload instead of `git push`.
 
 Terminal instead of fallback step 2: `kirocrew app install "$PWD/ato-2026-workshop"`
 (run from your clone). You still trust and enable it in the dashboard.
