@@ -335,10 +335,16 @@ export default function BacklogFactory() {
                 <div className="chip">Fixer · writes the fix</div><span aria-hidden="true">⇄</span><div className="chip">Reviewer · reads diff, runs tests</div>
               </div>
               <div className="rounds">
-                {(c.fix?.rounds || []).map((r) => (
-                  <div key={r.n}><span className="num">round {r.n}</span><span className="chip">{r.stat}</span>
-                    <span className={r.verdict === 'green' ? 'ok' : 'no'}>{r.verdict === 'green' ? 'Green:' : 'Changes asked:'}</span><span className="why">{r.note}</span></div>
-                ))}
+                {(c.fix?.rounds || []).map((r0, i) => {
+                  // Tolerate other field names an agent may write (round/review/fixer/tests).
+                  const r = r0 as any
+                  const num = r.n ?? r.round ?? i + 1
+                  const green = /green/i.test(String(r.verdict ?? r.review ?? ''))
+                  return (
+                    <div key={i}><span className="num">round {num}</span>{(r.stat) && <span className="chip">{r.stat}</span>}
+                      <span className={green ? 'ok' : 'no'}>{green ? 'Green:' : 'Changes asked:'}</span><span className="why">{r.note ?? r.fixer ?? r.tests ?? ''}</span></div>
+                  )
+                })}
                 {c.fix?.branch && <div><span className="num">branch</span><span className="chip">{c.fix.branch}</span><span className="why">local · not pushed</span></div>}
                 {!c.fix?.rounds?.length && <div><span className="why">No rounds yet.</span></div>}
               </div>

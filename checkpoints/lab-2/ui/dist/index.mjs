@@ -379,15 +379,20 @@ new test: ${c.repro.test}  ${c.repro.result || ""}` : ""
               /* @__PURE__ */ jsx("div", { className: "chip", children: "Reviewer \xB7 reads diff, runs tests" })
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "rounds", children: [
-              (c.fix?.rounds || []).map((r) => /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsxs("span", { className: "num", children: [
-                  "round ",
-                  r.n
-                ] }),
-                /* @__PURE__ */ jsx("span", { className: "chip", children: r.stat }),
-                /* @__PURE__ */ jsx("span", { className: r.verdict === "green" ? "ok" : "no", children: r.verdict === "green" ? "Green:" : "Changes asked:" }),
-                /* @__PURE__ */ jsx("span", { className: "why", children: r.note })
-              ] }, r.n)),
+              (c.fix?.rounds || []).map((r0, i) => {
+                const r = r0;
+                const num = r.n ?? r.round ?? i + 1;
+                const green = /green/i.test(String(r.verdict ?? r.review ?? ""));
+                return /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsxs("span", { className: "num", children: [
+                    "round ",
+                    num
+                  ] }),
+                  r.stat && /* @__PURE__ */ jsx("span", { className: "chip", children: r.stat }),
+                  /* @__PURE__ */ jsx("span", { className: green ? "ok" : "no", children: green ? "Green:" : "Changes asked:" }),
+                  /* @__PURE__ */ jsx("span", { className: "why", children: r.note ?? r.fixer ?? r.tests ?? "" })
+                ] }, i);
+              }),
               c.fix?.branch && /* @__PURE__ */ jsxs("div", { children: [
                 /* @__PURE__ */ jsx("span", { className: "num", children: "branch" }),
                 /* @__PURE__ */ jsx("span", { className: "chip", children: c.fix.branch }),

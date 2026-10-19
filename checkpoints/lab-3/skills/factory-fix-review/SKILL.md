@@ -13,8 +13,10 @@ Run after `factory-reproduce`. Three parts: CONDUCTOR (the backlog-factory agent
 Pick cards with `lane: "fix"`. Interactive run: fix ONE card unless the person asks for
 more (suggest the clearest root cause first). Scheduled run: start no fixes.
 
-1. **Ask first.** One line: "I will make branch factory/fix-<n> in
-   factory/worktrees/fix-<n> and start the fixer. OK? (yes / no)". Wait for yes.
+1. **Ask first, once.** One line: "I will make branch factory/fix-<n> in
+   factory/worktrees/fix-<n>, start the fixer and the reviewer, and update the board.
+   OK? (yes / no)". Wait for yes. That one yes covers the whole loop for this card
+   (worktree, fixer, reviewer, rounds, saved diff, board): do not ask again between steps.
 2. **Worktree** (from the repo folder; needs git):
    `git worktree add factory/worktrees/fix-<n> -b factory/fix-<n>`.
    No git (a ZIP copy)? Stop and say: "Lab 3 needs git. Watch the presenter's demo."
