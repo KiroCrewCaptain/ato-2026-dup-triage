@@ -75,15 +75,15 @@ file, a plain CLI, output that still pipes. No servers, no daemons, no new depen
 
 | Verdict | When | Lane | `needs` |
 |---|---|---|---|
-| `bug` → reproduce | a code bug you can try locally | `factory-reproduce` | |
-| `build` | small feature, clear, fits jot | `factory-triage` (waits for OK) | |
-| `reframe` | the root is real but the ask is the wrong fix: build the root fix | `factory-triage` (waits for OK) | |
+| `bug` → reproduce | a code bug you can try locally | `reproduce` | |
+| `build` | small feature, clear, fits jot | `triage` (waits for OK) | |
+| `reframe` | the root is real but the ask is the wrong fix: build the root fix | `triage` (waits for OK) | |
 | `needs_you` | product-level: changes what jot is (server, sync, crypto, daemon, packaging) | `needs_you` | `product` |
 | `needs_info` | cannot act without more from the reporter | `needs_you` | `needs_info` |
 | `cant_reproduce` | only on a platform you do not have (e.g. Windows only) | `needs_you` | `cant_reproduce` |
 | `reject` | fails step 1 or 3 (e.g. telemetry in a local notes tool) | `rejected` | |
 | `duplicate` | same problem as `dup_of` | `duplicate` | |
-| `docs` | docs-only fix | `factory-triage` | |
+| `docs` | docs-only fix | `triage` | |
 
 If an open PR already fixes the issue (a PR body says "fixes #N"), say so in `reason`
 and do not schedule a fix. For `needs_you`, always give your `lean` in one line.
@@ -120,7 +120,7 @@ Write valid JSON, UTF-8, this shape (omit empty fields):
 ```
 
 - `kind`: `bug` | `feature` | `question` | `docs`. `size`: `small` | `product`.
-- `lane`: `inbox` | `factory-triage` | `factory-reproduce` | `fix` | `ready` | `needs_you` | `rejected` | `duplicate`.
+- `lane`: `inbox` | `triage` | `reproduce` | `fix` | `ready` | `needs_you` | `rejected` | `duplicate`.
 - `reason`: one line, at most 12 words. `status`: two to four words.
 - `frame` is required for every feature and every bug (for a bug, `root` is the code cause).
 - At the end set `"run": {"state": "idle", "step": "triage done"}` and `github_writes: 0`.
