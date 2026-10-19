@@ -6,18 +6,29 @@ you through building your own app, and its guide agent does the typing.
 
 ## Install (Kiro Crew Stable 0.9.0)
 
-1. Fork this repo on GitHub, then clone your fork (or use **Code → Download ZIP**
-   on your fork and unzip it).
-2. In Kiro Crew: **Discover** → the database icon at the top right
-   (**Manage app sources**) → **Install from Path** → paste the full path of
+**From GitHub (main path, about 20 seconds, no GitHub sign-in, needs `git`):**
+
+1. In Kiro Crew: **Discover** → the database icon at the top right
+   (**Manage app sources**) → **Add Registry**.
+2. Repo: `https://github.com/KiroCrewCaptain/ato-2026-dup-triage` → **Add Registry**.
+3. The app list shows **ATO 2026 Workshop** → **Install**.
+4. The trust dialog opens before anything is downloaded → **Trust this app and enable**.
+5. The app page opens with "Install complete" → **Enable**.
+   **ATO 2026 Workshop** now shows in the sidebar. Open it.
+
+**Fallback: Install from Path** (no `git`, or GitHub blocked):
+
+1. Get the repo onto the laptop: clone your fork, or **Code → Download ZIP** and unzip.
+2. **Discover** → database icon → **Install from Path** → paste the full path of
    this folder, for example `/Users/you/ato-2026-dup-triage/ato-2026-workshop`
    → **Install**.
-3. Trust and enable it: **Library** → **Show N disabled apps** →
-   **ATO 2026 Workshop** → **⋯** → **Enable** → **Trust this app and enable**.
-4. **ATO 2026 Workshop** now shows in the sidebar. Open it.
+3. **Library** → **Show N disabled apps** → **ATO 2026 Workshop** → **⋯** →
+   **Enable** → **Trust this app and enable**.
 
-Terminal instead of step 2: `kirocrew app install "$PWD/ato-2026-workshop"`
+Terminal instead of fallback step 2: `kirocrew app install "$PWD/ato-2026-workshop"`
 (run from your clone). You still trust and enable it in the dashboard.
+
+You still need your own fork and clone for the labs: the guide builds your app there.
 
 ## What is inside
 

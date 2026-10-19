@@ -39,23 +39,23 @@ const STEPS: Step[] = [
     does: 'The guide looks at your clone, your fork and the kirocrew command. It only reads.',
     see: 'A short checklist that ends with “All set, press Step 2”.' },
   { id: 's2', n: 2, lab: 'Lab 1', title: 'Build your app', ghost: 'pose-3.svg',
-    does: 'The guide copies Lab 1 into dup-triage/ and installs it, after your yes.',
-    see: 'Dup Detective in Apps → Library. You trust and enable it there.' },
+    does: 'The guide copies Lab 1 into dup-triage/ and installs your app, after your yes.',
+    see: 'Dup Detective in Library. You trust and enable it there.' },
   { id: 's3', n: 3, lab: 'Lab 1', title: 'First run and check', ghost: 'pose-5.svg',
-    does: 'You run your app in its own chat. The guide scores the report against the answer key.',
+    does: 'You chat with your app’s agent, dup-triage. The guide scores its report against the answer key.',
     see: 'dup-triage-report.md with duplicate groups, each with a quote from both issues.' },
   { id: 's4', n: 4, lab: 'Lab 2', title: 'Memory and helpers', ghost: 'pose-7.svg',
-    does: 'Your app learns to remember verdicts and to split work across helper agents.',
+    does: 'Your app gets memory: its agent keeps its verdicts and splits big lists across helper agents.',
     see: 'The second run says “N reused”. Each helper waits for your Allow.' },
   { id: 's5', n: 5, lab: 'Lab 3', title: 'Schedule, boundary and a page', ghost: 'pose-8.svg',
-    does: 'A paused weekday schedule, a post-only-on-your-fork rule, and a page of its own.',
+    does: 'Your app gets a paused weekday cron job, a post-only-on-your-fork rule, and its own page.',
     see: 'A Dup Detective page in the sidebar. The schedule shows Paused.' },
   { id: 's6', n: 6, title: 'Remix it into your idea', ghost: 'wave.svg',
     does: 'Tell the guide your idea. It writes a new skill into your app and reinstalls.',
-    see: 'Your own skill in the app. Try it in a dup-triage chat.' },
+    see: 'Your own skill inside your app. Try it in a chat with dup-triage.' },
   { id: 's7', n: 7, title: 'Share it', ghost: 'pose-1.svg',
     does: 'The guide commits your app on a branch. You push it to your fork yourself.',
-    see: 'Your app in your fork. A friend installs it from their clone.' },
+    see: 'Your app in your fork. A friend clones it and installs the dup-triage/ folder.' },
 ]
 
 const SETUP = [
@@ -64,13 +64,22 @@ const SETUP = [
   { id: 'c3', title: 'Your fork, cloned', hint: 'Fork the starter repo on GitHub, then clone your fork.' },
 ]
 
-const CONCEPTS = [
-  { k: 'Skill', tag: 'the rules', body: 'A Markdown file of rules an agent reads. It says how to do one job.',
-    eg: 'skills/dup-triage/SKILL.md' },
-  { k: 'MCP', tag: 'the hands', body: 'A tool server. It gives an agent new actions, like reading an API.',
-    eg: 'a GitHub or database server' },
-  { k: 'App', tag: 'the whole job', body: 'One folder you install: agent, skills, tools, schedule, page and limits. You trust it once.',
-    eg: 'this page is an app' },
+// "What is an app?" — the owner's model, same labels as the deck (slides 3-4).
+// The real Lab 3 part sits under each label.
+const PLUGIN = [
+  { k: 'Skill', code: 'skills/', real: 'skills/dup-triage' },
+  { k: 'MCP', code: 'mcpServers', real: 'optional: none of its own' },
+]
+const APP_PARTS = [
+  { k: 'Cron jobs', code: 'crons', real: 'dup-triage-daily, paused' },
+  { k: 'Memory', code: 'verdicts file', real: 'dup-triage-verdicts.json' },
+  { k: 'Harness API', code: '@kirocrew-core', real: 'spawn_run · /api/crons' },
+  { k: 'UI bundle', code: 'ui/dist', real: 'its own page' },
+]
+const OS_MAP = [
+  ['OS', 'Kiro Crew'],
+  ['App', 'Your Kiro Crew app'],
+  ['App store', 'Discover · Library'],
 ]
 
 const store = {
@@ -144,12 +153,36 @@ const CSS = `
 .atows .field label{font-weight:700;font-size:17px}
 .atows .field input{font:500 18px var(--mono);padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--field);color:var(--ink);width:100%}
 .atows .field small{color:var(--muted);font-size:15px}
-.atows .concept .k{font-size:30px;font-weight:700;margin:0}
-.atows .concept .t{font-family:var(--mono);font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-text);margin:2px 0 12px}
-.atows .concept p{margin:0 0 12px}
-.atows .concept code{font-family:var(--mono);font-size:15px;color:var(--muted)}
-.atows .concept.app{border-color:rgba(142,72,255,.55);background:linear-gradient(160deg,rgba(142,72,255,.16),rgba(234,58,64,.08)),var(--card)}
-.atows .concept.app .t{color:var(--kc-text)}
+.atows .build{display:grid;gap:22px}
+.atows .eq{display:flex;align-items:stretch;flex-wrap:wrap;gap:12px 0}
+.atows .frag{display:flex;align-items:stretch}
+.atows .op{align-self:center;font:700 34px/1 var(--sans);color:var(--accent-text);padding:0 12px}
+.atows .tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:150px}
+.atows .tile b{font-size:24px;line-height:1.1}
+.atows .tile code{font-family:var(--mono);font-size:15px;color:var(--muted)}
+.atows .tile span{font-size:16px;color:var(--muted)}
+.atows .eq.r1 .tile{min-width:190px}.atows .eq.r1 .tile b{font-size:30px}
+.atows .tile.plug{border:2px solid rgba(142,72,255,.75);background:rgba(142,72,255,.13)}
+.atows .tile.app{border:3px solid var(--red);background:rgba(234,58,64,.13);min-width:150px}.atows .tile.app b{font-size:36px}
+.atows .eq.r2{flex-wrap:nowrap}
+.atows .eq.r2 .op{font-size:28px;padding:0 7px}
+.atows .eq.r2 .tile{min-width:0;padding:12px 14px;gap:6px}
+.atows .eq.r2 .tile b{font-size:20px;white-space:nowrap}
+.atows .eq.r2 .tile code{font-size:13px;white-space:nowrap}
+.atows .eq.r2 .tile.app b{font-size:30px}
+.atows .osrow.frag{display:block}
+.atows .osrow h3{margin:8px 0 12px;font-size:26px}
+.atows .osmap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0}
+.atows .pair{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+.atows .pair dt{font-weight:700;color:var(--muted);min-width:96px}
+.atows .pair dt::after{content:"↔";margin-left:12px;color:var(--accent-text)}
+.atows .pair dd{margin:0;font-weight:700;font-size:20px}
+.atows .real{margin-top:18px;color:var(--muted)}
+.atows .real summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.atows .real ul{margin:10px 0 0;padding-left:22px;columns:2}
+.atows .real li{margin:4px 0}.atows .real code{font-family:var(--mono);font-size:15px}
+.atows .build .frag{opacity:0;transform:translateY(14px)}
+.atows .build.on .frag{animation:atows-rise .55s var(--ease) both;animation-delay:calc(var(--i) * 140ms)}
 .atows .steps{display:grid;gap:18px;padding:0;margin:0;list-style:none}
 .atows .step{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:22px;align-items:center}
 .atows .step .num{position:relative;width:84px;height:84px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(150deg,var(--red-dk),var(--kc));color:#fff;font-size:34px;font-weight:700}
@@ -171,6 +204,7 @@ const CSS = `
 .atows .boundary img{width:86px;height:auto}
 .atows .boundary ul{margin:0;padding-left:22px}
 .atows .boundary li{margin:4px 0}
+.atows .howto{margin:8px 0 10px;padding-left:24px}.atows .howto li{margin:6px 0}.atows .howto code,.atows .see code{font-family:var(--mono);font-size:15px}
 .atows footer{padding:40px 0 56px;color:var(--muted);font-size:16px}
 .atows .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* entrance: short, once, then rest */
@@ -184,8 +218,8 @@ const CSS = `
 @keyframes atows-float-in{from{opacity:0;transform:translateY(60px) rotate(-8deg)}to{opacity:1;transform:none}}
 @keyframes atows-hop{0%{transform:none}40%{transform:translateY(-16px) rotate(-6deg)}100%{transform:none}}
 @keyframes atows-pop{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}
-@media (prefers-reduced-motion:reduce){.atows *,.atows *::before{animation:none!important;transition:none!important}}
-@media (max-width:900px){.atows .hero .wrap{grid-template-columns:1fr}.atows .logo{max-width:300px;padding:24px}.atows .grid3{grid-template-columns:1fr}
+@media (prefers-reduced-motion:reduce){.atows *,.atows *::before{animation:none!important;transition:none!important}.atows .build .frag{opacity:1;transform:none}}
+@media (max-width:900px){.atows .hero .wrap{grid-template-columns:1fr}.atows .logo{max-width:300px;padding:24px}.atows .grid3,.atows .osmap{grid-template-columns:1fr}.atows .eq.r2{flex-wrap:wrap}
   .atows .step{grid-template-columns:64px minmax(0,1fr)}.atows .step .num{width:64px;height:64px;font-size:26px}.atows .step .acts{grid-column:1/-1}.atows .wrap{padding:0 22px}}
 `
 
@@ -200,6 +234,17 @@ export default function AtoWorkshop() {
   const [hop, setHop] = useState(0)
   const [enter, setEnter] = useState(true)
   const live = useRef<HTMLDivElement>(null)
+  const whatRef = useRef<HTMLElement>(null)
+  const [built, setBuilt] = useState(false)
+  // The plugin -> app build-up plays once, the first time the section is on
+  // screen, then rests on the full equation. Reduced motion: CSS shows it at once.
+  useEffect(() => {
+    const el = whatRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') { setBuilt(true); return }
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { setBuilt(true); io.disconnect() } }, { threshold: 0.35 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   useEffect(() => { store.set('setup', setup) }, [setup])
   useEffect(() => { store.set('done', done) }, [done])
@@ -237,7 +282,7 @@ export default function AtoWorkshop() {
             </div>
             <div className="eyebrow rise" style={{ ['--d' as string]: '.12s' }}>Hands-on workshop · your guide</div>
             <h1 className="rise" style={{ ['--d' as string]: '.2s' }}>Build your first<br />Kiro Crew app</h1>
-            <p className="tag rise" style={{ ['--d' as string]: '.3s' }}>An agent that triages your backlog while you sleep</p>
+            <p className="tag rise" style={{ ['--d' as string]: '.3s' }}>An agentic app that triages your backlog while you sleep</p>
             <ul className="facts rise" style={{ ['--d' as string]: '.4s' }} aria-label="Session facts">
               <li>Mon, Oct 19, 2026</li>
               <li>2:30–4:30 PM ET</li>
@@ -290,24 +335,59 @@ export default function AtoWorkshop() {
           </div>
         </section>
 
-        <section className="s" aria-labelledby="what-h">
-          <h2 id="what-h">What is an app?</h2>
-          <p className="lead">You already have skills and MCP. An app packs them into one job you can install, trust and share.</p>
-          <div className="grid3">
-            {CONCEPTS.map((c) => (
-              <div className={`card concept${c.k === 'App' ? ' app' : ''}`} key={c.k}>
-                <p className="k">{c.k}</p>
-                <p className="t">{c.tag}</p>
-                <p>{c.body}</p>
-                <code>{c.eg}</code>
+        <section className="s" aria-labelledby="what-h" ref={whatRef}>
+          <h2 id="what-h">What is a Kiro Crew app?</h2>
+          <p className="lead">Skill and MCP make an agent plugin. Add the rest, and it is an app.</p>
+          <div className={`build${built ? ' on' : ''}`}>
+            <div className="eq r1" role="group" aria-label="Skill plus MCP equals Agent plugin">
+              {PLUGIN.map((t, i) => (
+                <div className="frag" key={t.k} style={{ ['--i' as string]: i }}>
+                  {i > 0 && <span className="op" aria-hidden="true">+</span>}
+                  <div className="tile"><b>{t.k}</b><code>{t.code}</code></div>
+                </div>
+              ))}
+              <div className="frag" style={{ ['--i' as string]: 2 }}>
+                <span className="op" aria-hidden="true">=</span>
+                <div className="tile plug"><b>Agent plugin</b></div>
               </div>
-            ))}
+            </div>
+            <div className="eq r2" role="group" aria-label="Agent plugin plus cron jobs, memory, harness API and UI bundle equals App">
+              <div className="frag" style={{ ['--i' as string]: 3 }}>
+                <div className="tile plug"><b>Agent plugin</b></div>
+              </div>
+              {APP_PARTS.map((t, i) => (
+                <div className="frag" key={t.k} style={{ ['--i' as string]: 4 + i }}>
+                  <span className="op" aria-hidden="true">+</span>
+                  <div className="tile"><b>{t.k}</b><code>{t.code}</code></div>
+                </div>
+              ))}
+              <div className="frag" style={{ ['--i' as string]: 8 }}>
+                <span className="op" aria-hidden="true">=</span>
+                <div className="tile app"><b>App</b><span>your own UI</span></div>
+              </div>
+            </div>
+            <div className="osrow frag" style={{ ['--i' as string]: 9 }}>
+              <h3>Kiro Crew = an Agent OS</h3>
+              <dl className="osmap">
+                {OS_MAP.map(([l, r]) => (
+                  <div className="pair" key={l}><dt>{l}</dt><dd>{r}</dd></div>
+                ))}
+              </dl>
+            </div>
           </div>
+          <details className="real">
+            <summary>Where each part is in Dup Detective (Lab 3)</summary>
+            <ul>
+              {[...PLUGIN, ...APP_PARTS].map((t) => (
+                <li key={t.k}><b>{t.k}</b> <code>{t.real}</code></li>
+              ))}
+            </ul>
+          </details>
         </section>
 
         <section className="s" aria-labelledby="build-h">
           <h2 id="build-h">Build your app</h2>
-          <p className="lead">Each button opens a new chat with your guide and sends that step. The guide explains, then asks yes / no before it changes anything.</p>
+          <p className="lead">Each button opens a new chat with this app’s agent, your guide, and sends that step. It explains, then asks yes / no before it changes anything.</p>
           <ol className="steps">
             {STEPS.map((s) => (
               <li key={s.id} className={`card step${done[s.id] ? ' done' : ''}`}>
@@ -337,14 +417,27 @@ export default function AtoWorkshop() {
           <div className="card boundary">
             <img src={asset('ghosts/pose-8.svg')} alt="" aria-hidden="true" />
             <div>
-              <h2 id="safe-h" style={{ fontSize: 26 }}>What the guide will and won’t do</h2>
+              <h2 id="safe-h" style={{ fontSize: 26 }}>What your guide (this app’s agent) will and won’t do</h2>
               <ul>
                 <li>It types for you: copies files, writes your skill, runs the install.</li>
                 <li>It asks <b>yes / no</b> before every change.</li>
                 <li>It never writes to GitHub. You push to your own fork.</li>
-                <li>You trust and enable each app yourself, in Apps → Library.</li>
+                <li>You trust and enable each app yourself, in Library.</li>
               </ul>
             </div>
+          </div>
+        </section>
+
+        <section className="s" aria-labelledby="share-h">
+          <div className="card">
+            <h2 id="share-h" style={{ fontSize: 26 }}>Install this app on another laptop</h2>
+            <p className="see">From GitHub, about 20 seconds. No GitHub sign-in; the laptop needs <code>git</code>.</p>
+            <ol className="howto">
+              <li><b>Discover</b> → database icon (<b>Manage app sources</b>) → <b>Add Registry</b></li>
+              <li>Repo: <code>https://github.com/{BASE_REPO}</code> → <b>Add Registry</b></li>
+              <li>Search <b>ATO 2026</b> → <b>Install</b> → <b>Trust this app and enable</b>, then press <b>Enable</b> on the app page</li>
+            </ol>
+            <p className="see">No <code>git</code>, or GitHub blocked? Clone or unzip the repo, use <b>Install from Path</b> in the same menu with its <code>ato-2026-workshop</code> folder, then trust and enable it in <b>Library</b>.</p>
           </div>
         </section>
 

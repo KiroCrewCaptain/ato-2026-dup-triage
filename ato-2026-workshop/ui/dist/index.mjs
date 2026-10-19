@@ -26,8 +26,8 @@ var STEPS = [
     lab: "Lab 1",
     title: "Build your app",
     ghost: "pose-3.svg",
-    does: "The guide copies Lab 1 into dup-triage/ and installs it, after your yes.",
-    see: "Dup Detective in Apps \u2192 Library. You trust and enable it there."
+    does: "The guide copies Lab 1 into dup-triage/ and installs your app, after your yes.",
+    see: "Dup Detective in Library. You trust and enable it there."
   },
   {
     id: "s3",
@@ -35,7 +35,7 @@ var STEPS = [
     lab: "Lab 1",
     title: "First run and check",
     ghost: "pose-5.svg",
-    does: "You run your app in its own chat. The guide scores the report against the answer key.",
+    does: "You chat with your app\u2019s agent, dup-triage. The guide scores its report against the answer key.",
     see: "dup-triage-report.md with duplicate groups, each with a quote from both issues."
   },
   {
@@ -44,7 +44,7 @@ var STEPS = [
     lab: "Lab 2",
     title: "Memory and helpers",
     ghost: "pose-7.svg",
-    does: "Your app learns to remember verdicts and to split work across helper agents.",
+    does: "Your app gets memory: its agent keeps its verdicts and splits big lists across helper agents.",
     see: "The second run says \u201CN reused\u201D. Each helper waits for your Allow."
   },
   {
@@ -53,7 +53,7 @@ var STEPS = [
     lab: "Lab 3",
     title: "Schedule, boundary and a page",
     ghost: "pose-8.svg",
-    does: "A paused weekday schedule, a post-only-on-your-fork rule, and a page of its own.",
+    does: "Your app gets a paused weekday cron job, a post-only-on-your-fork rule, and its own page.",
     see: "A Dup Detective page in the sidebar. The schedule shows Paused."
   },
   {
@@ -62,7 +62,7 @@ var STEPS = [
     title: "Remix it into your idea",
     ghost: "wave.svg",
     does: "Tell the guide your idea. It writes a new skill into your app and reinstalls.",
-    see: "Your own skill in the app. Try it in a dup-triage chat."
+    see: "Your own skill inside your app. Try it in a chat with dup-triage."
   },
   {
     id: "s7",
@@ -70,7 +70,7 @@ var STEPS = [
     title: "Share it",
     ghost: "pose-1.svg",
     does: "The guide commits your app on a branch. You push it to your fork yourself.",
-    see: "Your app in your fork. A friend installs it from their clone."
+    see: "Your app in your fork. A friend clones it and installs the dup-triage/ folder."
   }
 ];
 var SETUP = [
@@ -78,25 +78,20 @@ var SETUP = [
   { id: "c2", title: "Signed in", hint: "The Set up Kiro page is done and a chat answers." },
   { id: "c3", title: "Your fork, cloned", hint: "Fork the starter repo on GitHub, then clone your fork." }
 ];
-var CONCEPTS = [
-  {
-    k: "Skill",
-    tag: "the rules",
-    body: "A Markdown file of rules an agent reads. It says how to do one job.",
-    eg: "skills/dup-triage/SKILL.md"
-  },
-  {
-    k: "MCP",
-    tag: "the hands",
-    body: "A tool server. It gives an agent new actions, like reading an API.",
-    eg: "a GitHub or database server"
-  },
-  {
-    k: "App",
-    tag: "the whole job",
-    body: "One folder you install: agent, skills, tools, schedule, page and limits. You trust it once.",
-    eg: "this page is an app"
-  }
+var PLUGIN = [
+  { k: "Skill", code: "skills/", real: "skills/dup-triage" },
+  { k: "MCP", code: "mcpServers", real: "optional: none of its own" }
+];
+var APP_PARTS = [
+  { k: "Cron jobs", code: "crons", real: "dup-triage-daily, paused" },
+  { k: "Memory", code: "verdicts file", real: "dup-triage-verdicts.json" },
+  { k: "Harness API", code: "@kirocrew-core", real: "spawn_run \xB7 /api/crons" },
+  { k: "UI bundle", code: "ui/dist", real: "its own page" }
+];
+var OS_MAP = [
+  ["OS", "Kiro Crew"],
+  ["App", "Your Kiro Crew app"],
+  ["App store", "Discover \xB7 Library"]
 ];
 var store = {
   get(k, d) {
@@ -176,12 +171,36 @@ var CSS = `
 .atows .field label{font-weight:700;font-size:17px}
 .atows .field input{font:500 18px var(--mono);padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--field);color:var(--ink);width:100%}
 .atows .field small{color:var(--muted);font-size:15px}
-.atows .concept .k{font-size:30px;font-weight:700;margin:0}
-.atows .concept .t{font-family:var(--mono);font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-text);margin:2px 0 12px}
-.atows .concept p{margin:0 0 12px}
-.atows .concept code{font-family:var(--mono);font-size:15px;color:var(--muted)}
-.atows .concept.app{border-color:rgba(142,72,255,.55);background:linear-gradient(160deg,rgba(142,72,255,.16),rgba(234,58,64,.08)),var(--card)}
-.atows .concept.app .t{color:var(--kc-text)}
+.atows .build{display:grid;gap:22px}
+.atows .eq{display:flex;align-items:stretch;flex-wrap:wrap;gap:12px 0}
+.atows .frag{display:flex;align-items:stretch}
+.atows .op{align-self:center;font:700 34px/1 var(--sans);color:var(--accent-text);padding:0 12px}
+.atows .tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:150px}
+.atows .tile b{font-size:24px;line-height:1.1}
+.atows .tile code{font-family:var(--mono);font-size:15px;color:var(--muted)}
+.atows .tile span{font-size:16px;color:var(--muted)}
+.atows .eq.r1 .tile{min-width:190px}.atows .eq.r1 .tile b{font-size:30px}
+.atows .tile.plug{border:2px solid rgba(142,72,255,.75);background:rgba(142,72,255,.13)}
+.atows .tile.app{border:3px solid var(--red);background:rgba(234,58,64,.13);min-width:150px}.atows .tile.app b{font-size:36px}
+.atows .eq.r2{flex-wrap:nowrap}
+.atows .eq.r2 .op{font-size:28px;padding:0 7px}
+.atows .eq.r2 .tile{min-width:0;padding:12px 14px;gap:6px}
+.atows .eq.r2 .tile b{font-size:20px;white-space:nowrap}
+.atows .eq.r2 .tile code{font-size:13px;white-space:nowrap}
+.atows .eq.r2 .tile.app b{font-size:30px}
+.atows .osrow.frag{display:block}
+.atows .osrow h3{margin:8px 0 12px;font-size:26px}
+.atows .osmap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0}
+.atows .pair{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+.atows .pair dt{font-weight:700;color:var(--muted);min-width:96px}
+.atows .pair dt::after{content:"\u2194";margin-left:12px;color:var(--accent-text)}
+.atows .pair dd{margin:0;font-weight:700;font-size:20px}
+.atows .real{margin-top:18px;color:var(--muted)}
+.atows .real summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.atows .real ul{margin:10px 0 0;padding-left:22px;columns:2}
+.atows .real li{margin:4px 0}.atows .real code{font-family:var(--mono);font-size:15px}
+.atows .build .frag{opacity:0;transform:translateY(14px)}
+.atows .build.on .frag{animation:atows-rise .55s var(--ease) both;animation-delay:calc(var(--i) * 140ms)}
 .atows .steps{display:grid;gap:18px;padding:0;margin:0;list-style:none}
 .atows .step{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:22px;align-items:center}
 .atows .step .num{position:relative;width:84px;height:84px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(150deg,var(--red-dk),var(--kc));color:#fff;font-size:34px;font-weight:700}
@@ -203,6 +222,7 @@ var CSS = `
 .atows .boundary img{width:86px;height:auto}
 .atows .boundary ul{margin:0;padding-left:22px}
 .atows .boundary li{margin:4px 0}
+.atows .howto{margin:8px 0 10px;padding-left:24px}.atows .howto li{margin:6px 0}.atows .howto code,.atows .see code{font-family:var(--mono);font-size:15px}
 .atows footer{padding:40px 0 56px;color:var(--muted);font-size:16px}
 .atows .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* entrance: short, once, then rest */
@@ -216,8 +236,8 @@ var CSS = `
 @keyframes atows-float-in{from{opacity:0;transform:translateY(60px) rotate(-8deg)}to{opacity:1;transform:none}}
 @keyframes atows-hop{0%{transform:none}40%{transform:translateY(-16px) rotate(-6deg)}100%{transform:none}}
 @keyframes atows-pop{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}
-@media (prefers-reduced-motion:reduce){.atows *,.atows *::before{animation:none!important;transition:none!important}}
-@media (max-width:900px){.atows .hero .wrap{grid-template-columns:1fr}.atows .logo{max-width:300px;padding:24px}.atows .grid3{grid-template-columns:1fr}
+@media (prefers-reduced-motion:reduce){.atows *,.atows *::before{animation:none!important;transition:none!important}.atows .build .frag{opacity:1;transform:none}}
+@media (max-width:900px){.atows .hero .wrap{grid-template-columns:1fr}.atows .logo{max-width:300px;padding:24px}.atows .grid3,.atows .osmap{grid-template-columns:1fr}.atows .eq.r2{flex-wrap:wrap}
   .atows .step{grid-template-columns:64px minmax(0,1fr)}.atows .step .num{width:64px;height:64px;font-size:26px}.atows .step .acts{grid-column:1/-1}.atows .wrap{padding:0 22px}}
 `;
 function AtoWorkshop() {
@@ -231,6 +251,23 @@ function AtoWorkshop() {
   const [hop, setHop] = useState(0);
   const [enter, setEnter] = useState(true);
   const live = useRef(null);
+  const whatRef = useRef(null);
+  const [built, setBuilt] = useState(false);
+  useEffect(() => {
+    const el = whatRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setBuilt(true);
+      return;
+    }
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) {
+        setBuilt(true);
+        io.disconnect();
+      }
+    }, { threshold: 0.35 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   useEffect(() => {
     store.set("setup", setup);
   }, [setup]);
@@ -288,7 +325,7 @@ function AtoWorkshop() {
             /* @__PURE__ */ jsx("br", {}),
             "Kiro Crew app"
           ] }),
-          /* @__PURE__ */ jsx("p", { className: "tag rise", style: { ["--d"]: ".3s" }, children: "An agent that triages your backlog while you sleep" }),
+          /* @__PURE__ */ jsx("p", { className: "tag rise", style: { ["--d"]: ".3s" }, children: "An agentic app that triages your backlog while you sleep" }),
           /* @__PURE__ */ jsxs("ul", { className: "facts rise", style: { ["--d"]: ".4s" }, "aria-label": "Session facts", children: [
             /* @__PURE__ */ jsx("li", { children: "Mon, Oct 19, 2026" }),
             /* @__PURE__ */ jsx("li", { children: "2:30\u20134:30 PM ET" }),
@@ -352,19 +389,60 @@ function AtoWorkshop() {
           ] })
         ] }, c.id)) })
       ] }),
-      /* @__PURE__ */ jsxs("section", { className: "s", "aria-labelledby": "what-h", children: [
-        /* @__PURE__ */ jsx("h2", { id: "what-h", children: "What is an app?" }),
-        /* @__PURE__ */ jsx("p", { className: "lead", children: "You already have skills and MCP. An app packs them into one job you can install, trust and share." }),
-        /* @__PURE__ */ jsx("div", { className: "grid3", children: CONCEPTS.map((c) => /* @__PURE__ */ jsxs("div", { className: `card concept${c.k === "App" ? " app" : ""}`, children: [
-          /* @__PURE__ */ jsx("p", { className: "k", children: c.k }),
-          /* @__PURE__ */ jsx("p", { className: "t", children: c.tag }),
-          /* @__PURE__ */ jsx("p", { children: c.body }),
-          /* @__PURE__ */ jsx("code", { children: c.eg })
-        ] }, c.k)) })
+      /* @__PURE__ */ jsxs("section", { className: "s", "aria-labelledby": "what-h", ref: whatRef, children: [
+        /* @__PURE__ */ jsx("h2", { id: "what-h", children: "What is a Kiro Crew app?" }),
+        /* @__PURE__ */ jsx("p", { className: "lead", children: "Skill and MCP make an agent plugin. Add the rest, and it is an app." }),
+        /* @__PURE__ */ jsxs("div", { className: `build${built ? " on" : ""}`, children: [
+          /* @__PURE__ */ jsxs("div", { className: "eq r1", role: "group", "aria-label": "Skill plus MCP equals Agent plugin", children: [
+            PLUGIN.map((t, i) => /* @__PURE__ */ jsxs("div", { className: "frag", style: { ["--i"]: i }, children: [
+              i > 0 && /* @__PURE__ */ jsx("span", { className: "op", "aria-hidden": "true", children: "+" }),
+              /* @__PURE__ */ jsxs("div", { className: "tile", children: [
+                /* @__PURE__ */ jsx("b", { children: t.k }),
+                /* @__PURE__ */ jsx("code", { children: t.code })
+              ] })
+            ] }, t.k)),
+            /* @__PURE__ */ jsxs("div", { className: "frag", style: { ["--i"]: 2 }, children: [
+              /* @__PURE__ */ jsx("span", { className: "op", "aria-hidden": "true", children: "=" }),
+              /* @__PURE__ */ jsx("div", { className: "tile plug", children: /* @__PURE__ */ jsx("b", { children: "Agent plugin" }) })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "eq r2", role: "group", "aria-label": "Agent plugin plus cron jobs, memory, harness API and UI bundle equals App", children: [
+            /* @__PURE__ */ jsx("div", { className: "frag", style: { ["--i"]: 3 }, children: /* @__PURE__ */ jsx("div", { className: "tile plug", children: /* @__PURE__ */ jsx("b", { children: "Agent plugin" }) }) }),
+            APP_PARTS.map((t, i) => /* @__PURE__ */ jsxs("div", { className: "frag", style: { ["--i"]: 4 + i }, children: [
+              /* @__PURE__ */ jsx("span", { className: "op", "aria-hidden": "true", children: "+" }),
+              /* @__PURE__ */ jsxs("div", { className: "tile", children: [
+                /* @__PURE__ */ jsx("b", { children: t.k }),
+                /* @__PURE__ */ jsx("code", { children: t.code })
+              ] })
+            ] }, t.k)),
+            /* @__PURE__ */ jsxs("div", { className: "frag", style: { ["--i"]: 8 }, children: [
+              /* @__PURE__ */ jsx("span", { className: "op", "aria-hidden": "true", children: "=" }),
+              /* @__PURE__ */ jsxs("div", { className: "tile app", children: [
+                /* @__PURE__ */ jsx("b", { children: "App" }),
+                /* @__PURE__ */ jsx("span", { children: "your own UI" })
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "osrow frag", style: { ["--i"]: 9 }, children: [
+            /* @__PURE__ */ jsx("h3", { children: "Kiro Crew = an Agent OS" }),
+            /* @__PURE__ */ jsx("dl", { className: "osmap", children: OS_MAP.map(([l, r]) => /* @__PURE__ */ jsxs("div", { className: "pair", children: [
+              /* @__PURE__ */ jsx("dt", { children: l }),
+              /* @__PURE__ */ jsx("dd", { children: r })
+            ] }, l)) })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("details", { className: "real", children: [
+          /* @__PURE__ */ jsx("summary", { children: "Where each part is in Dup Detective (Lab 3)" }),
+          /* @__PURE__ */ jsx("ul", { children: [...PLUGIN, ...APP_PARTS].map((t) => /* @__PURE__ */ jsxs("li", { children: [
+            /* @__PURE__ */ jsx("b", { children: t.k }),
+            " ",
+            /* @__PURE__ */ jsx("code", { children: t.real })
+          ] }, t.k)) })
+        ] })
       ] }),
       /* @__PURE__ */ jsxs("section", { className: "s", "aria-labelledby": "build-h", children: [
         /* @__PURE__ */ jsx("h2", { id: "build-h", children: "Build your app" }),
-        /* @__PURE__ */ jsx("p", { className: "lead", children: "Each button opens a new chat with your guide and sends that step. The guide explains, then asks yes / no before it changes anything." }),
+        /* @__PURE__ */ jsx("p", { className: "lead", children: "Each button opens a new chat with this app\u2019s agent, your guide, and sends that step. It explains, then asks yes / no before it changes anything." }),
         /* @__PURE__ */ jsx("ol", { className: "steps", children: STEPS.map((s) => /* @__PURE__ */ jsxs("li", { className: `card step${done[s.id] ? " done" : ""}`, children: [
           /* @__PURE__ */ jsxs("div", { className: `num${pulse === s.id ? " pulse" : ""}`, "aria-hidden": "true", children: [
             done[s.id] ? "\u2713" : s.n,
@@ -402,7 +480,7 @@ function AtoWorkshop() {
       /* @__PURE__ */ jsx("section", { className: "s", "aria-labelledby": "safe-h", children: /* @__PURE__ */ jsxs("div", { className: "card boundary", children: [
         /* @__PURE__ */ jsx("img", { src: asset("ghosts/pose-8.svg"), alt: "", "aria-hidden": "true" }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("h2", { id: "safe-h", style: { fontSize: 26 }, children: "What the guide will and won\u2019t do" }),
+          /* @__PURE__ */ jsx("h2", { id: "safe-h", style: { fontSize: 26 }, children: "What your guide (this app\u2019s agent) will and won\u2019t do" }),
           /* @__PURE__ */ jsxs("ul", { children: [
             /* @__PURE__ */ jsx("li", { children: "It types for you: copies files, writes your skill, runs the install." }),
             /* @__PURE__ */ jsxs("li", { children: [
@@ -411,8 +489,56 @@ function AtoWorkshop() {
               " before every change."
             ] }),
             /* @__PURE__ */ jsx("li", { children: "It never writes to GitHub. You push to your own fork." }),
-            /* @__PURE__ */ jsx("li", { children: "You trust and enable each app yourself, in Apps \u2192 Library." })
+            /* @__PURE__ */ jsx("li", { children: "You trust and enable each app yourself, in Library." })
           ] })
+        ] })
+      ] }) }),
+      /* @__PURE__ */ jsx("section", { className: "s", "aria-labelledby": "share-h", children: /* @__PURE__ */ jsxs("div", { className: "card", children: [
+        /* @__PURE__ */ jsx("h2", { id: "share-h", style: { fontSize: 26 }, children: "Install this app on another laptop" }),
+        /* @__PURE__ */ jsxs("p", { className: "see", children: [
+          "From GitHub, about 20 seconds. No GitHub sign-in; the laptop needs ",
+          /* @__PURE__ */ jsx("code", { children: "git" }),
+          "."
+        ] }),
+        /* @__PURE__ */ jsxs("ol", { className: "howto", children: [
+          /* @__PURE__ */ jsxs("li", { children: [
+            /* @__PURE__ */ jsx("b", { children: "Discover" }),
+            " \u2192 database icon (",
+            /* @__PURE__ */ jsx("b", { children: "Manage app sources" }),
+            ") \u2192 ",
+            /* @__PURE__ */ jsx("b", { children: "Add Registry" })
+          ] }),
+          /* @__PURE__ */ jsxs("li", { children: [
+            "Repo: ",
+            /* @__PURE__ */ jsxs("code", { children: [
+              "https://github.com/",
+              BASE_REPO
+            ] }),
+            " \u2192 ",
+            /* @__PURE__ */ jsx("b", { children: "Add Registry" })
+          ] }),
+          /* @__PURE__ */ jsxs("li", { children: [
+            "Search ",
+            /* @__PURE__ */ jsx("b", { children: "ATO 2026" }),
+            " \u2192 ",
+            /* @__PURE__ */ jsx("b", { children: "Install" }),
+            " \u2192 ",
+            /* @__PURE__ */ jsx("b", { children: "Trust this app and enable" }),
+            ", then press ",
+            /* @__PURE__ */ jsx("b", { children: "Enable" }),
+            " on the app page"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("p", { className: "see", children: [
+          "No ",
+          /* @__PURE__ */ jsx("code", { children: "git" }),
+          ", or GitHub blocked? Clone or unzip the repo, use ",
+          /* @__PURE__ */ jsx("b", { children: "Install from Path" }),
+          " in the same menu with its ",
+          /* @__PURE__ */ jsx("code", { children: "ato-2026-workshop" }),
+          " folder, then trust and enable it in ",
+          /* @__PURE__ */ jsx("b", { children: "Library" }),
+          "."
         ] })
       ] }) }),
       /* @__PURE__ */ jsxs("footer", { children: [
