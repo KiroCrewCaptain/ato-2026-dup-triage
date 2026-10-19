@@ -32,26 +32,30 @@ call, write the board once at the end.
    do not read `jot/cli.py` yourself, and after the yes do not read the board or this
    skill again.
 2. **Ask once.** "I will start 2 helpers: #a #b #c … and #x #y #z …, then write
-   board.json once at the end. OK? (yes / no)". Fewer than 4 bugs: one helper.
+   board.json once at the end. OK? (yes / no)". Batches are big on purpose (fewer
+   clicks): 1 helper for up to 3 bugs, 2 helpers for up to 12, 3 helpers above that.
    That one yes covers the helpers AND the final board write: do not ask again, and do not
    re-read files you already read in this chat.
 3. **Start the helpers in ONE `spawn_run` call, and never pass `cwd`** (0.9.0 refuses it for
-   this folder, and each refused spawn costs the person two more clicks). Use a `tasks` list of two tasks with
+   this folder, and each refused spawn costs the person two more clicks). Use a `tasks` list (one task per helper) with
    `agent: "factory-reproducer"` for each (a `cwd` is accepted only under `~/workspace`,
    `~/workplace` and similar roots; the repo may be anywhere).
    Each task holds: the repo's ABSOLUTE path, its bugs (number, title, body, root), and
    the line "Do your WHOLE batch in ONE shell call (see your prompt)."
    Tell the person in one line: "Each helper waits for your **Allow** (Review in panel →
    Allow): 2 clicks to start, then about 1 click each."
-4. **Wait for both completion events.** A helper's completion is final, whatever its
-   status. When BOTH have completed:
-   - a helper that came back `completed` with JSON → use the JSON from its completion
-     event as it is (do not open its result file, do not re-run its commands);
-   - a helper that came back **Stopped, failed, cancelled, timed out, or without JSON** →
-     do ITS batch yourself right away, in ONE shell call (same script shape as the helper),
-     and say "Helper 2 stopped, so I did #x #y #z myself." Never wait for a helper that has
-     already completed, and never say "I wait for the next helper" unless one is still
-     running.
+4. **Wait for every completion event.** A helper's completion is final, whatever its
+   status. For each helper:
+   - came back `completed` with JSON → use the JSON from its completion event as it is
+     (do not open its result file, do not re-run its commands);
+   - shows **Stopped**, failed, cancelled, timed out, or ended with no result →
+     `spawn_continue` it ONCE with "Finish your batch: one shell call, then the JSON";
+   - if that fails again → do ITS batch yourself right away, in ONE shell call (same
+     script shape as the helper), and say "Helper 2 stopped twice, so I did #x #y #z
+     myself."
+   **Never end your turn waiting for a helper.** If no helper is still running, carry on
+   to step 5 in the same turn.
+
 5. **Write the board once**, with ONE shell call from the repo folder that runs exactly
    this script, with the helpers' JSON lists pasted in. Never edit cards one by one with
    the file tool (each edit is a click). Then report.

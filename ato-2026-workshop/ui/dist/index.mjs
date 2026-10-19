@@ -171,7 +171,7 @@ var store = {
 };
 function promptFor(step, clone) {
   const lab = step.lab ? ` (${step.lab})` : "";
-  return `STEP ${step.n} \u2014 ${step.title}${lab}. My clone folder: ${clone}. Follow the workshop-guide skill for this step. Ask me yes/no before you change anything.`;
+  return `STEP ${step.n} \u2014 ${step.title}${lab}. My repo folder: ${clone}. Follow the workshop-guide skill for this step. Ask me yes/no before you change anything.`;
 }
 var ZIP_URL = `https://github.com/${BASE_REPO}/archive/refs/heads/main.zip`;
 var CSS = `
@@ -224,7 +224,7 @@ var CSS = `
 .atows.enter .ghost-hero{animation:atows-ghost-in .7s var(--e-over) .45s backwards}
 /* progress track */
 .atows .track{position:relative;margin:34px 0 0}
-.atows .track .lbl{display:flex;justify-content:space-between;font-size:16px;color:var(--muted);margin-bottom:10px;font-weight:600}
+.atows .track .lbl{display:flex;justify-content:space-between;font-size:16px;color:var(--muted);margin-bottom:34px;font-weight:600}
 .atows .bar{position:relative;height:14px;border-radius:999px;background:var(--line)}
 .atows .fill{position:absolute;inset:0;border-radius:999px;background:linear-gradient(90deg,var(--red-dk),var(--red) 35%,var(--kc));transform-origin:left;transition:transform .65s var(--e-over)}
 .atows .mtrack{position:absolute;inset:0;pointer-events:none;transition:transform .65s var(--e-over)}
@@ -238,7 +238,7 @@ var CSS = `
 .atows .lead{color:var(--muted);margin:0 0 24px;font-size:19px}
 .atows .rv:not(.in) .rvi{opacity:0;transform:translateY(26px)}
 .atows .rv.in .rvi{animation:atows-reveal .6s var(--e-snappy) backwards;animation-delay:calc(var(--i,0) * 70ms)}
-.atows .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.atows .grid3{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .atows .card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;transition:transform .35s var(--e-over),border-color .3s var(--e-snappy)}
 .atows .card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s var(--e-snappy);
   box-shadow:0 0 0 1px rgba(142,72,255,.4),0 18px 50px -18px rgba(234,58,64,.5),0 10px 40px -20px rgba(142,72,255,.75)}
@@ -259,7 +259,7 @@ var CSS = `
 .atows .check span{color:var(--muted);font-size:17px}
 .atows .field{margin-top:18px;display:grid;gap:8px}
 .atows .field label{font-weight:700;font-size:17px}
-.atows .field input{font:500 18px var(--mono);padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--field);color:var(--ink);width:100%}
+.atows .field input{font:500 18px var(--mono);padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--field);color:var(--ink);width:100%;max-width:100%;box-sizing:border-box}
 .atows .field small{color:var(--muted);font-size:15px}
 .atows .links{display:flex;flex-wrap:wrap;gap:6px 18px}
 /* "What is a Kiro Crew app?" build-up */

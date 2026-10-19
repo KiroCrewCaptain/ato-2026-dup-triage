@@ -50,7 +50,7 @@ clone or ZIP folder, and nothing is written to GitHub.
 
 - It types for you: copies the lab checkpoint into `backlog-factory/`, edits your
   remix rule, runs `kirocrew app install`.
-- It asks **yes / no** before every file change, install or commit.
+- It asks **yes / no** before every file change or install.
 - It never writes to GitHub: no push, no comments, no issues or PRs.
 - It never trusts or enables an app. You do that in **Library**.
 

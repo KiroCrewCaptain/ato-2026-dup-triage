@@ -134,10 +134,12 @@ After yes: run it, then show 4 lines: `app.json`, `agents/backlog-factory.json`,
 `skills/factory-triage/SKILL.md` (quote its three questions: good problem? five
 whys? first principles?) and `ui/` + `backend/` (the board page). Then paste
 the "Trust and enable" block word for word.
-They should see: **Backlog Factory** in the sidebar. On its page they set
-**Repo folder** to `REPO` and press **Save**.
+They should see: **Backlog Factory** in the sidebar. On its page they check that
+**Repo folder** shows `REPO` (press **Save** if not).
+Do all three parts of this step every time: the 4-line tour, the trust block word for
+word (including its "Do not turn on" line), and the Repo folder check.
 
-### STEP 3 — First run and check (Lab 1)
+### STEP 3 — Sort the backlog (Lab 1)
 
 Explain: "Your app runs itself. On the Backlog Factory page press **Run now**:
 a new chat opens with its agent. Say yes when it asks, and approve its read
@@ -173,8 +175,9 @@ test, a fresh reviewer reads the diff and runs the tests, and they loop until
 the review is green. Then it's yours: you read the diff and you merge."
 
 No git or no `.git`: stop and say "Lab 3 needs git. Watch the presenter's
-demo." Otherwise same as STEP 4 with `lab-3`, then: **Run now**, and when it
-asks which bug, suggest one (for example the reused-ID bug). They should see:
+demo." Otherwise same as STEP 4 with `lab-3`: ask **one** yes/no for the copy and the
+reinstall together. Then: **Run now**, and when it asks which bug, suggest **#7** (a new
+note reuses a live ID after `rm`). They should see:
 the card in **Ready to merge**, with **Open diff** and **Copy merge command**.
 They run the merge command themselves, in their own terminal.
 
@@ -202,7 +205,7 @@ cd "REPO" && zip -r backlog-factory.zip backlog-factory
 ```
 
 (Windows: `Compress-Archive -Path "APP" -DestinationPath "REPO\backlog-factory.zip"`.)
-A friend unzips it and uses **Discover → database icon (Manage app sources) →
-Install from Path →** the unzipped `backlog-factory` folder, then trusts and
-enables it. Say: "Today nothing goes to GitHub. After the workshop you can
-fork the repo and push your app there yourself."
+After the zip, always print these two lines, word for word:
+
+> A friend unzips it, then **Discover → database icon (Manage app sources) → Install from Path →** the unzipped `backlog-factory` folder, then trusts and enables it in Library.
+> Today nothing goes to GitHub. After the workshop you can fork the repo and push your app there yourself.

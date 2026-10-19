@@ -117,6 +117,8 @@ kirocrew app uninstall backlog-factory
 kirocrew app install "$PWD\backlog-factory"
 ```
 
+Ignore the install's *Run: kirocrew app enable* and Settings hint. Use Library, below.
+
 Then trust and enable it in the dashboard: **Library → Show N disabled apps →
 Backlog Factory → ⋯ → Enable → Trust this app and enable**. The app has a small
 backend (it serves the board), so it asks for trust. Do **not** turn on *Trust every

@@ -22,6 +22,8 @@ kirocrew app uninstall backlog-factory      # only if an older copy is installed
 kirocrew app install "$PWD/backlog-factory"
 ```
 
+Ignore the install's *Run: kirocrew app enable* and Settings hint. Use Library, below.
+
 Then **Library → Show N disabled apps → Backlog Factory → ⋯ → Enable → Trust this app
 and enable**. Open **Backlog Factory** in the sidebar, set **Repo folder**, press
 **Save**, then **Run now**.
