@@ -13,7 +13,7 @@ find bug reports a maintainer cannot act on yet, and draft the nudge.
 Same as the dup-triage skill: the live base repo (read-only)
 
 ```bash
-gh issue list -R KiroCrewCaptain/ato-2026-dup-triage --state open --limit 100 \
+gh issue list -R KiroCrewCaptain/ato-2026-dup-triage --state open --limit 200 \
   --json number,title,body,labels > issues.json
 ```
 

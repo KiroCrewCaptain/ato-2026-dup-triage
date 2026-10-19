@@ -1,0 +1,43 @@
+diff --git a/jot/cli.py b/jot/cli.py
+index f16d685..cbd75f8 100644
+--- a/jot/cli.py
++++ b/jot/cli.py
+@@ -34,10 +34,16 @@ def load_notes(path: Path) -> list[dict]:
+     """Read every note. A missing file means no notes yet."""
+     if not path.exists():
+         return []
+-    # Known limits (see the issue tracker): no explicit encoding, and an
+-    # empty or truncated file raises instead of being handled.
+     with open(path) as fh:
+-        return json.load(fh)
++        text = fh.read()
++    # An empty, whitespace-only, or otherwise unparseable file means no
++    # notes yet, rather than crashing with a JSONDecodeError.
++    if not text.strip():
++        return []
++    try:
++        return json.loads(text)
++    except json.JSONDecodeError:
++        return []
+ 
+ 
+ def save_notes(path: Path, notes: list[dict]) -> None:
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 2150b56..8af0482 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -36,6 +36,14 @@ class TestStorage(JotTestCase):
+     def test_missing_file_means_no_notes(self):
+         self.assertEqual(cli.load_notes(self.path), [])
+ 
++    def test_empty_file_means_no_notes(self):
++        self.path.write_text("")
++        self.assertEqual(cli.load_notes(self.path), [])
++
++    def test_whitespace_file_means_no_notes(self):
++        self.path.write_text("   \n\t ")
++        self.assertEqual(cli.load_notes(self.path), [])
++
+     def test_round_trip(self):
+         notes = []
+         cli.add_note(notes, "buy milk", ["home"])

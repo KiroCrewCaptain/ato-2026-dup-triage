@@ -294,5 +294,360 @@
     "title": "Add a test for the default notes location",
     "labels": [],
     "body": "There is a test that `JOT_FILE` wins, but none for the default path when `JOT_FILE` is not set (`~/.jot/notes.json`). One more test in `tests/test_cli.py` that unsets the variable and checks `notes_path()` would cover it."
+  },
+  {
+    "title": "Send anonymous usage stats so you know which commands people use",
+    "labels": [],
+    "body": "It would help you decide what to build next if jot sent a small anonymous ping to a server each time a command runs (command name, OS, version). Could be on by default with an opt-out flag."
+  },
+  {
+    "title": "Encrypt the notes file with a password",
+    "labels": [],
+    "body": "My notes have work stuff in them and notes.json is plain text. Could jot ask for a password and keep the file encrypted on disk? I'd type the password once per session."
+  },
+  {
+    "title": "KeyError: 'tags' after I edited notes.json by hand",
+    "labels": [
+      "bug"
+    ],
+    "body": "I added a note by editing `~/.jot/notes.json` directly. I copied the first note but left out `tags` because this one has none. Now `jot list` prints the first note and then dies:\n\n```\n$ jot list\n[ ]   1  2026-10-18 21:40  call the plumber\nTraceback (most recent call last):\n  ...\n  File \".../jot/cli.py\", line 92, in format_note\n    tags = \" \".join(f\"#{t}\" for t in note[\"tags\"])\nKeyError: 'tags'\n```\n\nAdding `\"tags\": []` by hand fixes it. Shouldn't a missing `tags` just mean no tags? Probably the same for `done`.\n\nDebian 12, Python 3.11, jot 0.3.1"
+  },
+  {
+    "title": "`jot undone` to reopen a note",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "I fat-fingered `jot done 12` instead of `jot done 21`. The only way back is editing the JSON.\n\nCould we get `jot undone 12` (or `jot done --undo 12`)?"
+  },
+  {
+    "title": "jot add fails with \"Expecting value\" after the disk filled up",
+    "labels": [],
+    "body": "My laptop's disk filled up overnight (a runaway log file). I freed some space, but now every jot command fails:\n\n```\n$ jot add \"buy stamps\"\nTraceback (most recent call last):\n  ...\njson.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)\n```\n\n`ls -l ~/.jot/notes.json` says 0 bytes. So all my notes are gone?? I have an old copy, so not the end of the world, but jot wiped the file and now won't even start.\n\nArch Linux, jot 0.3.1"
+  },
+  {
+    "title": "Is it safe to run jot from a cron job?",
+    "labels": [
+      "question"
+    ],
+    "body": "I want a cron job that runs `jot add \"water the plants\" --tag home` every Sunday morning. I might be using jot by hand at the same moment.\n\nDoes jot lock the file? Could two runs at once lose a note?"
+  },
+  {
+    "title": "Lost all my notes",
+    "labels": [
+      "bug"
+    ],
+    "body": "opened my terminal today and `jot list` shows NOTHING. i had like 200 notes in there. what happened?? did an update delete them"
+  },
+  {
+    "title": "Subtasks inside a note",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "For bigger things I'd like a note with steps under it:\n\n```\n[ ]   4  plan the move\n      [x] book the van\n      [ ] pack kitchen\n```\n\nMaybe `jot add \"pack kitchen\" --parent 4`, and `jot done 4` asks whether the children are done too."
+  },
+  {
+    "title": "JOT_FILE with ~ creates a folder literally named ~",
+    "labels": [
+      "bug"
+    ],
+    "body": "I set `JOT_FILE` in a `.env` file that a tool loads for me, so there is no shell expansion:\n\n```\nJOT_FILE=~/jot-notes.json\n```\n\njot doesn't complain. It writes to a folder called `~` inside whatever directory I'm in:\n\n```\n$ cd ~/projects/site\n$ jot add \"pick up keys\"\nadded 1\n$ find . -name jot-notes.json\n./~/jot-notes.json\n```\n\nSo every project folder gets its own `~` folder with different notes. And a folder named `~` is an accident waiting to happen 😬\n\nCould jot call `expanduser()` on the path?\n\nmacOS 14, jot 0.3.1"
+  },
+  {
+    "title": "Accounts and a cloud version of jot",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "jot is great but in 2026 everything should be in the cloud. Proposal:\n\n- `jot login`\n- notes stored on a jot server\n- a web dashboard\n- you could charge for premium. I'd pay!"
+  },
+  {
+    "title": "SyntaxError: future feature annotations is not defined",
+    "labels": [
+      "bug"
+    ],
+    "body": "```\n$ python3 -m jot list\n  File \"~/src/jot/jot/cli.py\", line 13\n    from __future__ import annotations\n    ^\nSyntaxError: future feature annotations is not defined\n```\n\nCloned the repo on our CentOS 7 build box (python3 there is 3.6.8). Line 13 is just an import, why is it a syntax error?"
+  },
+  {
+    "title": "multi line note messes up the list",
+    "labels": [],
+    "body": "If a note has a newline in it (I pasted a shopping list), `jot list` prints the extra lines flush left with no id, and the tag lands on the last line:\n\n```\n$ jot add $'shopping:\\n- eggs\\n- rice' --tag home\nadded 1\n$ jot add \"next note\"\nadded 2\n$ jot list\n[ ]   1  2026-10-19 08:02  shopping:\n- eggs\n- rice  #home\n[ ]   2  2026-10-19 08:02  next note\n```\n\nBreaks my `jot list | grep` and `wc -l` stuff too."
+  },
+  {
+    "title": "Option to save notes in lowercase",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "Could `jot add` have a `--lowercase` flag (or a `JOT_LOWERCASE=1` setting) so everything is saved in lower case? Then search would always find my stuff, because I always search in lower case."
+  },
+  {
+    "title": "`jot rm 3` deleted the wrong note",
+    "labels": [
+      "bug"
+    ],
+    "body": "Something weird with rm:\n\n```\n$ jot list\n[ ]   2  2026-10-19 08:02  pay rent\n[ ]   3  2026-10-19 08:02  book flights\n[ ]   3  2026-10-19 08:02  renew library card\n$ jot rm 3\nrm 3\n$ jot list\n[ ]   2  2026-10-19 08:02  pay rent\n[ ]   3  2026-10-19 08:02  renew library card\n```\n\nI wanted to remove the library card one. It removed the flights one instead. Also, why are there two 3s??\n\nmacOS 15, jot 0.3.1 from pipx"
+  },
+  {
+    "title": "Docs: where are the notes on Windows?",
+    "labels": [
+      "documentation"
+    ],
+    "body": "JOT.md says notes live in `~/.jot/notes.json`. On Windows there's no `~` in Explorer. After some digging I found it under `C:\\Users\\<me>\\.jot\\notes.json`.\n\nCould the README say that, and show how to set `JOT_FILE` in PowerShell (`$env:JOT_FILE = \"...\"`) and cmd (`set JOT_FILE=...`)?"
+  },
+  {
+    "title": "Unexpected UTF-8 BOM after I edited notes.json in Notepad",
+    "labels": [
+      "bug"
+    ],
+    "body": "My notes file is in a synced folder. I fixed a typo in it with Notepad on my work PC and saved. Now on my Mac:\n\n```\n$ jot list\nTraceback (most recent call last):\n  ...\njson.decoder.JSONDecodeError: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)\n```\n\nThe error message literally tells you the fix 🙂 The same file opens fine in VS Code.\n\nmacOS 14, Python 3.12, jot 0.3.1"
+  },
+  {
+    "title": "Fix a typo in a note without deleting it",
+    "labels": [],
+    "body": "is there any way to change the text of a note? i keep typoing and rm + add puts it at the bottom with a new date"
+  },
+  {
+    "title": "crash when adding a note",
+    "labels": [],
+    "body": "jot crashes when I add a note. It worked before."
+  },
+  {
+    "title": "Delete several notes at once",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "When I clean up I end up running `jot rm` ten times in a row. `jot rm 3 4 7` would be nice. Same for `done`."
+  },
+  {
+    "title": "What do the fields in notes.json mean? Is the format stable?",
+    "labels": [
+      "question"
+    ],
+    "body": "I'm writing a little script that reads `notes.json` to show my open notes in my status bar. I see `id`, `text`, `tags`, `done` and `created`.\n\n- Is `created` always UTC?\n- Can I rely on this format between versions, or should I parse `jot export` instead?"
+  },
+  {
+    "title": "Tags typed with # show as ##work and can't be filtered",
+    "labels": [
+      "bug"
+    ],
+    "body": "I typed the tag the way jot displays it:\n\n```\n$ jot add \"write slides\" --tag '#work'\nadded 1\n$ jot list\n[ ]   1  2026-10-19 08:02  write slides  ##work\n$ jot list --tag work\n$\n```\n\nSo the tag is stored as `#work`, shown as `##work`, and `--tag work` finds nothing. Either strip the `#` or refuse it?"
+  },
+  {
+    "title": "Use SQLite instead of one JSON file",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "With about 5,000 notes every command reads and rewrites the whole JSON file. SQLite is in the standard library and would give:\n\n- transactions (no more half-written files)\n- real IDs\n- fast search\n\nWould you take a PR that switches the storage?"
+  },
+  {
+    "title": "search only finds things if I type the exact capitals",
+    "labels": [],
+    "body": "My notes come from phone dictation, so they all start with a capital letter. On my laptop I type in lower case and search finds nothing:\n\n```\n$ jot add \"Milk and bread\"\nadded 1\n$ jot search milk\n$ jot search Milk\n[ ]   1  2026-10-19 08:02  Milk and bread\n```\n\nugh. Ubuntu 24.04, jot 0.3.1"
+  },
+  {
+    "title": "`jot` runs a different program on my Mac",
+    "labels": [
+      "bug"
+    ],
+    "body": "Weird one. On my work Mac, `jot list` prints an error that doesn't look like jot at all, something about a bad value. And `jot 3` prints\n\n```\n1\n2\n3\n```\n\n??? `python3 -m jot list` works fine. My home Mac is OK."
+  },
+  {
+    "title": "Add a `jot backup` command",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "After my notes file got corrupted in a power cut, I'd like `jot backup` to copy notes.json to notes.json.bak. Maybe even do it automatically before every write?"
+  },
+  {
+    "title": "My done notes vanished",
+    "labels": [
+      "bug"
+    ],
+    "body": "I marked 3 notes as done and now they don't show up in `jot list` at all. Are they deleted?? I wanted to see them crossed off."
+  },
+  {
+    "title": "BrokenPipeError when I pipe jot list into head",
+    "labels": [],
+    "body": "```\n$ jot list | head -1\n[ ]   1  2026-10-18 09:00  note 1\nTraceback (most recent call last):\n  ...\n  File \".../jot/cli.py\", line 135, in main\n    print(format_note(note))\nBrokenPipeError: [Errno 32] Broken pipe\n```\n\nSame with `jot export | head`. Only happens with my big notes file (a few thousand notes).\n\nFedora 41, Python 3.13"
+  },
+  {
+    "title": "Rewrite jot in Rust",
+    "labels": [
+      "enhancement",
+      "help wanted"
+    ],
+    "body": "Python startup is slow and pip installs are a pain. A Rust rewrite would give one static binary and instant startup. I could help with a first version!"
+  },
+  {
+    "title": "README doesn't say that `jot list` hides done notes",
+    "labels": [],
+    "body": "JOT.md has `jot list  # open notes` and `--all`, but never says plainly that done notes are hidden by default. One sentence would stop people thinking their notes got deleted."
+  },
+  {
+    "title": "`jot list --tag work` misses notes tagged Work",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "```\n$ jot add \"quarterly report\" --tag Work\nadded 1\n$ jot list --tag work\n$ jot list --tag Work\n[ ]   1  2026-10-19 08:02  quarterly report  #Work\n```\n\nI don't care about the capital letter, I want all my work notes. jot 0.3.1"
+  },
+  {
+    "title": "How do I back up my notes?",
+    "labels": [],
+    "body": "New to jot. What's the recommended way to back up? Just copy the json file? Is it ok to copy it while jot is running?"
+  },
+  {
+    "title": "Recurring notes",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "`jot add \"take out recycling\" --every monday` that comes back as open every week after I mark it done."
+  },
+  {
+    "title": "Cyrillic text crashes jot add on Windows",
+    "labels": [
+      "bug"
+    ],
+    "body": "```\n> jot add \"Позвонить маме\"\nTraceback (most recent call last):\n  ...\nUnicodeEncodeError: 'charmap' codec can't encode characters in position 41-54: character maps to <undefined>\n```\n\nEnglish notes work fine. Windows 10, Python 3.10, jot 0.3.1"
+  },
+  {
+    "title": "`jot tags` to list all my tags",
+    "labels": [
+      "enhancement",
+      "good first issue"
+    ],
+    "body": "I forget which tags I've used (`work` or `job`?). A `jot tags` that prints each tag with a count would help:\n\n```\nhome   12\nwork   30\n```"
+  },
+  {
+    "title": "search is broken???",
+    "labels": [
+      "bug"
+    ],
+    "body": "search doesnt work. at all. pls fix"
+  },
+  {
+    "title": "jot saves an empty note",
+    "labels": [
+      "bug"
+    ],
+    "body": "A script of mine ran `jot add \"$TITLE\"` with an empty variable. jot happily saved it:\n\n```\n$ jot add \"\"\nadded 1\n$ jot list\n[ ]   1  2026-10-19 08:02  \n```\n\nAn empty line with just an id. Shouldn't it refuse empty or blank text?"
+  },
+  {
+    "title": "Check for a new version on every run",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "jot should check PyPI each time it starts and print \"a new version is available\". Lots of CLIs do this."
+  },
+  {
+    "title": "One notes file per project?",
+    "labels": [
+      "question"
+    ],
+    "body": "Can I have a separate notes list per project folder, like a `.jot.json` in the repo? Or do I have to use tags for that?"
+  },
+  {
+    "title": "Print notes as a Markdown task list",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "I write my standup in a GitHub PR description. I'd love `jot list --md` that prints `- [ ] text` lines I can paste straight in."
+  },
+  {
+    "title": "Notes I add in the evening show tomorrow's date",
+    "labels": [
+      "bug"
+    ],
+    "body": "I'm in Honolulu. I added a note at 10pm last night:\n\n```\n$ date\nSun Oct 18 22:02:11 HST 2026\n$ jot add \"dentist\"\nadded 1\n$ jot list\n[ ]   1  2026-10-19 08:02  dentist\n```\n\nIt says the 19th at 8am. Is jot using some other clock?"
+  },
+  {
+    "title": "Let me choose the ID when adding a note",
+    "labels": [
+      "bug"
+    ],
+    "body": "I'd like `jot add \"pay rent\" --id 4` so my IDs stay the same as in my old system. Right now IDs shift around after I delete stuff and I can't keep track."
+  },
+  {
+    "title": "PermissionError on Windows when my notes are in OneDrive",
+    "labels": [],
+    "body": "My notes file is in my OneDrive folder. Sometimes `jot add` fails with\n\n```\nPermissionError: [Errno 13] Permission denied: 'C:\\\\Users\\\\me\\\\OneDrive\\\\jot\\\\notes.json'\n```\n\nand then works if I try again a few seconds later. Windows 11."
+  },
+  {
+    "title": "Share a notes list with my team",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "Our team would love a shared `#team` list that everyone can add to from their own laptop."
+  },
+  {
+    "title": "Read the note text from stdin",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "`echo \"call back\" | jot add -` or `pbpaste | jot add -` would be really handy in scripts."
+  },
+  {
+    "title": "jot list shows weird characters",
+    "labels": [],
+    "body": "some of my notes show weird characters in the list. how do i fix"
+  },
+  {
+    "title": "Add a CHANGELOG",
+    "labels": [
+      "documentation"
+    ],
+    "body": "I upgraded from 0.2.4 to 0.3.1 and couldn't find what changed anywhere. A short CHANGELOG.md would help."
+  },
+  {
+    "title": "`jot clear` to delete all notes",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "I want to start over every week. Right now I empty the file and jot crashes (see the JSONDecodeError issues). Please add `jot clear`."
+  },
+  {
+    "title": "nothing works after updating",
+    "labels": [],
+    "body": "Updated jot this morning and now every command just errors. Rolling back for now."
+  },
+  {
+    "title": "jot search doesn't find notes by their tag",
+    "labels": [
+      "bug"
+    ],
+    "body": "```\n$ jot add \"write slides\" --tag work\nadded 1\n$ jot search work\n$\n```\n\nI'd expect search to look at tags too. Bug?"
+  },
+  {
+    "title": "jot where: print which notes file is used",
+    "labels": [],
+    "body": "Please add `jot where` (or show it in `jot --version`) that prints the notes file path jot is using. I have JOT_FILE set in some shells and not in others and I keep getting confused."
+  },
+  {
+    "title": "Full-screen terminal UI",
+    "labels": [
+      "enhancement"
+    ],
+    "body": "Something like `jot ui` with arrow keys to move between notes, space to mark done and `/` to search. Like a tiny htop for notes."
+  },
+  {
+    "title": "deadlines",
+    "labels": [],
+    "body": "would be great to give notes a deadline and sort by it"
+  },
+  {
+    "title": "Can I rename a tag in all my notes at once?",
+    "labels": [
+      "question"
+    ],
+    "body": "I used `job` for a while and now I use `work`. Is there a way to rename a tag everywhere, or should I edit the JSON?"
+  },
+  {
+    "title": "Does jot work in Termux on Android?",
+    "labels": [],
+    "body": "Thinking about using jot on my phone with Termux. Has anyone tried it? Anything special to set up?"
+  },
+  {
+    "title": "README: say that JOT_FILE should be a full path",
+    "labels": [
+      "question"
+    ],
+    "body": "JOT.md says notes live in the path in `JOT_FILE`, but not that it should be a full path. A relative path like `notes.json` means every folder gets its own notes. And `~` is not expanded when the variable is set outside a shell (see the issue about the `~` folder).\n\nOne line in the docs would help."
   }
 ]

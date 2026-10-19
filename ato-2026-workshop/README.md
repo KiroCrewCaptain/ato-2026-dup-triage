@@ -1,12 +1,13 @@
 # ATO 2026 Workshop app
 
 The guide for the All Things Open 2026 workshop "Build Your First Kiro Crew
-App" (Mon Oct 19, 2:30–4:30 PM ET, Room 304). Install it first. Its page walks
+App" (Mon Oct 19, 2:30–4:30 PM ET, Room 304). Today you build *an agentic software factory that
+turns GitHub issues into reviewed fixes*. Install it first. Its page walks
 you through building your own app, and its guide agent does the typing.
 
 ## Install (Kiro Crew Stable 0.9.0)
 
-**From GitHub (main path, about 20 seconds, no GitHub sign-in, needs `git`):**
+**From GitHub (main path, no GitHub sign-in, needs `git`):**
 
 1. In Kiro Crew: **Discover** → the database icon at the top right
    (**Manage app sources**) → **Add Registry**.
@@ -16,7 +17,7 @@ you through building your own app, and its guide agent does the typing.
 5. The app page opens with "Install complete" → **Enable**.
    **ATO 2026 Workshop** now shows in the sidebar. Open it.
 
-**Fallback: No git? Download ZIP** (tested on a machine with no `git`, about 20 seconds):
+**Fallback: No git? Download ZIP** (tested on a machine with no `git`):
 
 1. Download [the repo as a ZIP](https://github.com/KiroCrewCaptain/ato-2026-dup-triage/archive/refs/heads/main.zip)
    and unzip it. You get `ato-2026-dup-triage-main/`.

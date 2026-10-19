@@ -3,7 +3,7 @@
 
 The output has the same shape as
 
-    gh issue list -R KiroCrewCaptain/ato-2026-dup-triage --state open --limit 100 \
+    gh issue list -R KiroCrewCaptain/ato-2026-dup-triage --state open --limit 200 \
       --json number,title,body,labels
 
 on the base repo right after scripts/seed-issues.sh --apply:

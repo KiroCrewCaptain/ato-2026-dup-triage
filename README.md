@@ -1,7 +1,8 @@
 # Build Your First Kiro Crew App: Backlog Factory
 
 Starter repo for the All Things Open 2026 workshop
-**"Build Your First Kiro Crew App: An agentic app that triages your GitHub backlog"**
+**"Build Your First Kiro Crew App"**: an agentic software factory that turns GitHub
+issues into reviewed fixes
 (Mon Oct 19, 2:30–4:30 PM ET, Room 304).
 
 In two hours you build **Backlog Factory**, a [Kiro Crew](https://github.com/kirodotdev/KiroCrew)
@@ -60,8 +61,7 @@ No GitHub account, token or fork is needed today.
    unzip it, and use that folder (for example `~/Downloads/ato-2026-dup-triage-main`)
    wherever this handout says "your folder".
 
-2. **Install the ATO 2026 Workshop app.** It is your guide for the rest of the session.
-   About 20 seconds:
+2. **Install the ATO 2026 Workshop app.** It is your guide for the rest of the session:
    **Discover** → database icon (**Manage app sources**) → **Add Registry** →
    Repo `https://github.com/KiroCrewCaptain/ato-2026-dup-triage` → **Add Registry**.
    The app list shows **ATO 2026 Workshop** → **Install** → **Trust this app
@@ -80,7 +80,7 @@ only inside your folder.
 ### Offline fallback
 
 `data/issues.json` holds the repo's open issues, in the shape
-`gh issue list --json number,title,body,labels` returns. The factory uses it when the
+`gh issue list --state open --limit 200 --json number,title,body,labels` returns. The factory uses it when the
 GitHub call fails. **Offline issue data does not make the model work offline.**
 
 ## The labs (about 70 minutes)
@@ -147,7 +147,7 @@ app-registry.json    lists ato-2026-workshop, so this repo also works as a Kiro 
 answer-key.md        the expected board: bug groups, verdicts, reframes
 checkpoints/         lab-1, lab-2, lab-3: the Backlog Factory app folder after each lab
 data/issues.json     offline copy of the open issues
-seed/issues.json     the first 45 issues as written (used to seed the repo)
+seed/issues.json     all 100 issues as written, in order (used to seed the repo)
 scripts/             seed-issues.sh, refresh-offline-data.sh, build-offline-data.py
 extras/dup-detective the earlier Dup Detective app (find duplicate issues), kept as an example
 jot/, tests/, JOT.md the sample project the issues are about

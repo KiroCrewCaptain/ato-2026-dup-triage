@@ -27,3 +27,6 @@ and enable**. Open **Backlog Factory** in the sidebar, set **Repo folder**, pres
 **Save**, then **Run now**.
 
 Nothing here writes to GitHub. The factory writes only `factory/` in your folder.
+
+`expected/` holds one real run's `board.json` (and, in Lab 3, the saved diff). Copy it to
+`factory/board.json` if your run is slow; it is an example, not the answer key.

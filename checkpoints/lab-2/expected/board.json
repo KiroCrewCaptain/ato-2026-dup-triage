@@ -1,0 +1,1581 @@
+{
+  "app": "backlog-factory",
+  "repo": "KiroCrewCaptain/ato-2026-dup-triage",
+  "source": "live",
+  "updated": "2026-10-19T08:40:40Z",
+  "run": {
+    "state": "idle",
+    "step": "reproduce done"
+  },
+  "github_writes": 0,
+  "issues": [
+    {
+      "n": 2,
+      "title": "jot crashes with JSONDecodeError after my laptop died",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 12,
+      "status": "duplicate",
+      "reason": "Battery died -> truncated file. Same as #12."
+    },
+    {
+      "n": 3,
+      "title": "Add `jot edit` to change a note's text",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: edit text, keep id/tags/date.",
+      "frame": {
+        "good": "Yes. rm+add loses tags and date.",
+        "whys": [
+          "No way to change text.",
+          "rm+add resets fields."
+        ],
+        "root": "No edit command.",
+        "best": "Add jot edit ID TEXT. One subcommand, one test."
+      }
+    },
+    {
+      "n": 4,
+      "title": "UnicodeEncodeError when I add a note with an emoji (Windows)",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 16,
+      "status": "duplicate",
+      "reason": "Emoji on Windows; same encoding root as #16."
+    },
+    {
+      "n": 5,
+      "title": "search doesn't find \"Groceries\" when I type groceries",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 17,
+      "status": "duplicate",
+      "reason": "Groceries vs groceries; same as #17."
+    },
+    {
+      "n": 6,
+      "title": "Shell completion for bash and zsh",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: static completion script.",
+      "frame": {
+        "good": "Yes. Standard CLI nicety.",
+        "whys": [
+          "No completion.",
+          "Users tab subcommands."
+        ],
+        "root": "No completion script.",
+        "best": "Ship a small bash/zsh completion. One test-light add."
+      }
+    },
+    {
+      "n": 7,
+      "title": "Two notes have the same ID after rm",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 32,
+      "status": "duplicate",
+      "reason": "Same id-reuse bug as #32."
+    },
+    {
+      "n": 8,
+      "title": "Times in `jot list` are 4 hours off",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 21,
+      "status": "duplicate",
+      "reason": "\"4 hours off\" is UTC by design; see #21."
+    },
+    {
+      "n": 9,
+      "title": "Support regular expressions in `jot search`",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: --regex flag on search.",
+      "frame": {
+        "good": "Yes. Behind a flag, substring stays default.",
+        "whys": [
+          "Users search ticket patterns.",
+          "Substring can't."
+        ],
+        "root": "search has no regex option.",
+        "best": "Add jot search --regex. One flag, one test."
+      }
+    },
+    {
+      "n": 10,
+      "title": "How do I keep work and personal notes apart?",
+      "kind": "question",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "reframe",
+      "status": "waiting for OK",
+      "reason": "Want separation; tags or JOT_FILE already do it.",
+      "frame": {
+        "good": "Root is 'keep lists apart', not a new feature.",
+        "whys": [
+          "Want work vs personal split.",
+          "Two files already possible."
+        ],
+        "root": "Separation already works via JOT_FILE/tags.",
+        "best": "Document JOT_FILE per-context; maybe #84."
+      }
+    },
+    {
+      "n": 11,
+      "title": "`jot: command not found` after pip install --user on macOS",
+      "kind": "question",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "PATH/scripts dir not on PATH after --user.",
+      "lean": "Env PATH issue; docs fix. Ask python version/PATH."
+    },
+    {
+      "n": 12,
+      "title": "Expecting value: line 1 column 1 (char 0)",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "Root named: empty file makes json.load raise.",
+      "frame": {
+        "good": "Yes. Many reports, one cause.",
+        "whys": [
+          "notes.json is empty or truncated.",
+          "load_notes does json.load with no guard."
+        ],
+        "root": "load_notes() in jot/cli.py raises on empty/bad file.",
+        "best": "Treat empty/invalid file as no notes (or clear error). One test."
+      },
+      "repro": {
+        "cmd": "printf \"\" > nf.json; JOT_FILE=nf.json jot list",
+        "out": "Traceback ... json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "note": "empty/truncated file crashes",
+        "test": "factory/repro/test_12.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: load_notes() calls json.load with no guard. Empty or truncated file -> JSONDecodeError. Any OS.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 13,
+      "title": "Colored output",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: color + NO_COLOR + off when piped.",
+      "frame": {
+        "good": "Yes. Respect NO_COLOR and tty.",
+        "whys": [
+          "Plain output only.",
+          "Color helps scanning."
+        ],
+        "root": "No color support.",
+        "best": "Color when tty and NO_COLOR unset. One test."
+      }
+    },
+    {
+      "n": 14,
+      "title": "Feature request: export notes as a Markdown checklist",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: one flag on export, uses notes.",
+      "frame": {
+        "good": "Yes. Several people want Markdown out.",
+        "whys": [
+          "export only does JSON.",
+          "People paste into Obsidian/GitHub."
+        ],
+        "root": "No Markdown export.",
+        "best": "Add jot export --format md. One flag, one test."
+      }
+    },
+    {
+      "n": 15,
+      "title": "PermissionError when the notes file is owned by root",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "File owned by root after sudo; a clearer error?",
+      "lean": "User's chown fixes it; jot could print a friendlier error."
+    },
+    {
+      "n": 16,
+      "title": "Notes file from Windows won't open on my Mac (UnicodeDecodeError 0xe9)",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "Root named: open() uses no explicit encoding.",
+      "frame": {
+        "good": "Yes. Cross-OS and emoji crashes share one cause.",
+        "whys": [
+          "File read/written with the OS default codec.",
+          "Windows cp1252 can't do many chars."
+        ],
+        "root": "open(path) in load_notes/save_notes lacks encoding='utf-8'.",
+        "best": "Open read+write with encoding='utf-8'. One test."
+      },
+      "repro": {
+        "cmd": "latin-1 notes.json (byte 0xe9 for é); JOT_FILE=.. jot list",
+        "out": "UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe9 in position 20",
+        "note": "Windows file, no encoding set",
+        "test": "factory/repro/test_16.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: open(path) in load_notes/save_notes has no encoding=\"utf-8\". A non-utf-8 file (Windows/latin-1) cannot be read.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 17,
+      "title": "Case-insensitive search please",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "reframe",
+      "status": "sorted",
+      "reason": "Not a bug: search is case-sensitive by design. Reframe as a feature request: add a case-insensitive search option.",
+      "frame": {
+        "good": "Yes. Users expect grep -i behaviour.",
+        "whys": [
+          "search_notes does `query in text`.",
+          "No case folding."
+        ],
+        "root": "search_notes() is case-sensitive in jot/cli.py.",
+        "best": "Case-insensitive by default; keep behaviour simple. One test."
+      }
+    },
+    {
+      "n": 18,
+      "title": "Can jot sync between two computers?",
+      "kind": "question",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Sync is a product, not a CLI flag.",
+      "lean": "Use a synced folder; jot stays local, one file."
+    },
+    {
+      "n": 19,
+      "title": "`jot done 4` marked the wrong note",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 32,
+      "status": "duplicate",
+      "reason": "done hit wrong note: id reuse, same as #32."
+    },
+    {
+      "n": 20,
+      "title": "pip install fails on Python 3.8",
+      "kind": "question",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Drop the >=3.9 pin to support 3.8?",
+      "lean": "Keep 3.9 pin; 3.8 is EOL soon. Your call."
+    },
+    {
+      "n": 21,
+      "title": "Show local time instead of UTC",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "reframe",
+      "status": "waiting for OK",
+      "reason": "UTC is by design; show local time or label it.",
+      "frame": {
+        "good": "Yes, but the ask is the fix. Root: UTC shown unlabeled.",
+        "whys": [
+          "created uses UTC.",
+          "Nothing says UTC."
+        ],
+        "root": "datetime.now(timezone.utc) shown with no label.",
+        "best": "Show local time, or append 'UTC'. Small, one test."
+      }
+    },
+    {
+      "n": 22,
+      "title": "Due dates and reminders",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: --due date + list --due sort (no reminders).",
+      "frame": {
+        "good": "Yes. Due dates help; reminders out of scope.",
+        "whys": [
+          "No due field.",
+          "Users track deadlines by hand."
+        ],
+        "root": "No due-date field.",
+        "best": "Add --due and list --due sort. One test."
+      }
+    },
+    {
+      "n": 23,
+      "title": "jot list fails after I cleared notes.json",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 12,
+      "status": "duplicate",
+      "reason": "Cleared file to empty. Same as #12."
+    },
+    {
+      "n": 24,
+      "title": "Emoji show as ?? in cmd.exe",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "cant_reproduce",
+      "needs": "cant_reproduce",
+      "status": "needs you",
+      "reason": "cmd.exe console codepage, not jot's file I/O.",
+      "lean": "Console limit; Windows Terminal is fine. Note in docs."
+    },
+    {
+      "n": 25,
+      "title": "Add a CONTRIBUTING guide",
+      "kind": "docs",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "docs",
+      "status": "docs fix",
+      "reason": "Add CONTRIBUTING with test command."
+    },
+    {
+      "n": 26,
+      "title": "zsh: command not found: jot",
+      "kind": "question",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "Same not-found-on-PATH as #11.",
+      "lean": "Same as #11: scripts dir not on PATH."
+    },
+    {
+      "n": 27,
+      "title": "jot search misses matches",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 17,
+      "status": "duplicate",
+      "reason": "todo vs TODO; same as #17."
+    },
+    {
+      "n": 28,
+      "title": "Pin or prioritize notes",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: pin keeps a note on top.",
+      "frame": {
+        "good": "Yes. Simple priority need.",
+        "whys": [
+          "All notes rank equally.",
+          "No way to raise one."
+        ],
+        "root": "No pin field/sort.",
+        "best": "Add jot pin ID; sort pinned first. One test."
+      }
+    },
+    {
+      "n": 29,
+      "title": "UnicodeEncodeError: 'charmap' codec can't encode character '\\u2192'",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 16,
+      "status": "duplicate",
+      "reason": "Arrow char on Windows; same as #16."
+    },
+    {
+      "n": 30,
+      "title": "Custom date format in `jot list`",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: JOT_DATE_FORMAT env for list.",
+      "frame": {
+        "good": "Yes. Small display preference.",
+        "whys": [
+          "Date format is fixed.",
+          "Users want shorter."
+        ],
+        "root": "format_note hardcodes the date format.",
+        "best": "Read JOT_DATE_FORMAT env. One test."
+      }
+    },
+    {
+      "n": 31,
+      "title": "Respect XDG_DATA_HOME on Linux",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: use XDG_DATA_HOME on Linux.",
+      "frame": {
+        "good": "Yes. Standard Linux location.",
+        "whys": [
+          "jot makes a home dotfolder.",
+          "XDG is the norm."
+        ],
+        "root": "notes_path ignores XDG_DATA_HOME.",
+        "best": "Use $XDG_DATA_HOME/jot on Linux; JOT_FILE still wins. One test."
+      }
+    },
+    {
+      "n": 32,
+      "title": "IDs are reused after deleting a note",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "Root named: next_id uses count, reuses ids.",
+      "frame": {
+        "good": "Yes. The clearest statement of the id bug.",
+        "whys": [
+          "rm shrinks the list.",
+          "next_id = len(notes)+1 then collides."
+        ],
+        "root": "next_id() returns len(notes)+1 in jot/cli.py.",
+        "best": "Give notes a stable max-id+1. One change, one test."
+      },
+      "repro": {
+        "cmd": "jot add a; jot add b; jot add c; jot rm 2; jot add d; jot list",
+        "out": "1  a\n3  c\n3  d",
+        "note": "new note \"d\" reuses id 3 (still in use by \"c\")",
+        "test": "factory/repro/test_32.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: next_id() = len(notes)+1. After a delete the count no longer matches max id, so ids collide. Any version, any OS.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 33,
+      "title": "Can I get my notes out as .md?",
+      "kind": "feature",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 14,
+      "status": "duplicate",
+      "reason": "Notes as .md; same as #14."
+    },
+    {
+      "n": 34,
+      "title": "Homebrew formula",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Homebrew packaging/distribution channel.",
+      "lean": "Packaging work, not jot code. Your call."
+    },
+    {
+      "n": 35,
+      "title": "Run the tests in GitHub Actions",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: CI workflow running unittest.",
+      "frame": {
+        "good": "Yes. Catches regressions on PRs.",
+        "whys": [
+          "Tests exist, nothing runs them.",
+          "Regressions slip in."
+        ],
+        "root": "No CI workflow.",
+        "best": "Add a workflow running unittest on 3 OSes. One file."
+      }
+    },
+    {
+      "n": 36,
+      "title": "Archive done notes older than 30 days",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: archive old done notes to a file.",
+      "frame": {
+        "good": "Yes. Keeps list readable.",
+        "whys": [
+          "Done notes pile up.",
+          "No archive path."
+        ],
+        "root": "No archive command.",
+        "best": "jot archive --older-than 30d -> notes-archive.json. One test."
+      }
+    },
+    {
+      "n": 37,
+      "title": "export output looks wrong",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "No repro, no detail on what looks wrong.",
+      "lean": "Ask: what command, what output, expected?"
+    },
+    {
+      "n": 38,
+      "title": "`jot rm` should say \"removed\", not \"rm\"",
+      "kind": "bug",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: print 'removed N' for rm.",
+      "frame": {
+        "good": "Yes. 'rm 3' reads like an echo.",
+        "whys": [
+          "print uses args.command.",
+          "rm prints 'rm'."
+        ],
+        "root": "print(f\"{args.command} {args.id}\") for rm.",
+        "best": "Print 'removed N' for rm; keep done. One test."
+      }
+    },
+    {
+      "n": 39,
+      "title": "done command not working",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "No repro; may be id reuse (#32).",
+      "lean": "Likely id reuse #32; ask for a jot list + the id."
+    },
+    {
+      "n": 40,
+      "title": "Tags are broken",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 76,
+      "status": "duplicate",
+      "reason": "\"tags broken\"; most likely tag case #76."
+    },
+    {
+      "n": 41,
+      "title": "Say \"no notes yet\" when the list is empty",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: print 'no notes yet' when empty.",
+      "frame": {
+        "good": "Yes. New users think it broke.",
+        "whys": [
+          "list prints nothing when empty.",
+          "Looks like a failure."
+        ],
+        "root": "No empty-state message in main().",
+        "best": "Print 'no notes yet' when list is empty. One test."
+      }
+    },
+    {
+      "n": 42,
+      "title": "jot is really slow",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "\"slow\" with no size or timing.",
+      "lean": "Ask note count and timing; whole-file rewrite is known (see #68)."
+    },
+    {
+      "n": 43,
+      "title": "`jot export --help` should say the output is JSON",
+      "kind": "docs",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "docs",
+      "status": "docs fix",
+      "reason": "Export help should say output is JSON.",
+      "frame": {
+        "good": "Yes. One-line help clarity.",
+        "whys": [
+          "help says 'print all notes'.",
+          "It prints JSON."
+        ],
+        "root": "help string in build_parser().",
+        "best": "Change help to 'print all notes as JSON'."
+      }
+    },
+    {
+      "n": 44,
+      "title": "Doesn't work on my work laptop",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "No error, no OS, no steps.",
+      "lean": "Ask OS, error text, how installed."
+    },
+    {
+      "n": 45,
+      "title": "Add a test for the default notes location",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: test default notes path.",
+      "frame": {
+        "good": "Yes. Closes a test gap.",
+        "whys": [
+          "Only JOT_FILE-wins is tested.",
+          "Default path untested."
+        ],
+        "root": "No test for ~/.jot default.",
+        "best": "Add one test unsetting JOT_FILE. One test."
+      }
+    },
+    {
+      "n": 47,
+      "title": "Send anonymous usage stats so you know which commands people use",
+      "kind": "feature",
+      "size": "small",
+      "lane": "rejected",
+      "verdict": "reject",
+      "status": "rejected",
+      "reason": "Telemetry in a local notes tool. No."
+    },
+    {
+      "n": 48,
+      "title": "Encrypt the notes file with a password",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "On-disk encryption + key handling is big.",
+      "lean": "Real crypto work; keep out of core. Your call."
+    },
+    {
+      "n": 49,
+      "title": "KeyError: 'tags' after I edited notes.json by hand",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "Missing 'tags' key crashes list/format.",
+      "frame": {
+        "good": "Yes, within reason (hand-edited file).",
+        "whys": [
+          "User omitted tags key.",
+          "format_note reads note['tags']."
+        ],
+        "root": "format_note/filter assume every field exists.",
+        "best": "Default missing fields (tags=[]). One test."
+      },
+      "repro": {
+        "cmd": "notes.json = [{\"id\":1,\"text\":\"hi\"}] (hand-edited); jot list",
+        "out": "KeyError: 'done' (then 'tags') in filter_notes/format_note",
+        "note": "real key is 'done' first; title said 'tags' - same root",
+        "test": "factory/repro/test_49.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: filter_notes/format_note assume every field exists (note['done'], note['tags']). A hand-edited note missing a field raises KeyError.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 50,
+      "title": "`jot undone` to reopen a note",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: reopen a note, mirror of done.",
+      "frame": {
+        "good": "Yes. Only escape now is editing JSON.",
+        "whys": [
+          "done sets done=True.",
+          "No way to set it back."
+        ],
+        "root": "No undone command.",
+        "best": "Add jot undone ID. Mirror of done. One test."
+      }
+    },
+    {
+      "n": 51,
+      "title": "jot add fails with \"Expecting value\" after the disk filled up",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 12,
+      "status": "duplicate",
+      "reason": "Disk full -> truncated file. Same as #12."
+    },
+    {
+      "n": 52,
+      "title": "Is it safe to run jot from a cron job?",
+      "kind": "question",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "File locking question (cron + manual).",
+      "lean": "No lock today; concurrent writes can lose a note. See #71."
+    },
+    {
+      "n": 53,
+      "title": "Lost all my notes",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "\"lost notes\" with no file state.",
+      "lean": "Likely empty/moved file; ask for JOT_FILE and file contents."
+    },
+    {
+      "n": 54,
+      "title": "Subtasks inside a note",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Subtasks change the note model.",
+      "lean": "New nested structure; keep flat for now."
+    },
+    {
+      "n": 55,
+      "title": "JOT_FILE with ~ creates a folder literally named ~",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "~ in JOT_FILE taken literally (no expanduser).",
+      "frame": {
+        "good": "Yes. Makes a folder literally named ~.",
+        "whys": [
+          "JOT_FILE set outside a shell.",
+          "Path(env) keeps the ~."
+        ],
+        "root": "notes_path() does Path(env) without expanduser.",
+        "best": "expanduser on JOT_FILE. One test."
+      },
+      "repro": {
+        "cmd": "JOT_FILE='~/t55.json' jot add hello",
+        "out": "creates a folder literally named ~ in the cwd (./~/t55.json)",
+        "note": "~ not expanded",
+        "test": "factory/repro/test_55.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: notes_path() does Path(env) with no expanduser(). The literal \"~\" becomes a real directory name.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 56,
+      "title": "Accounts and a cloud version of jot",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Accounts/cloud/web = a different product.",
+      "lean": "Out of scope: jot is a local file CLI."
+    },
+    {
+      "n": 57,
+      "title": "SyntaxError: future feature annotations is not defined",
+      "kind": "bug",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Python 3.6 lacks 3.7 'from __future__ annotations'.",
+      "lean": "3.6 unsupported (CentOS 7). State min 3.9 in docs."
+    },
+    {
+      "n": 58,
+      "title": "multi line note messes up the list",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "Newline in text breaks list layout.",
+      "frame": {
+        "good": "Yes. Pasted multi-line notes look broken.",
+        "whys": [
+          "text may contain newlines.",
+          "format_note prints raw."
+        ],
+        "root": "format_note doesn't handle newlines.",
+        "best": "Indent or escape continuation lines. One test."
+      },
+      "repro": {
+        "cmd": "jot add \"line one\\nline two\"; jot list",
+        "out": "[ ]   1  ...  line one\nline two",
+        "note": "embedded newline splits the list row",
+        "test": "factory/repro/test_58.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: format_note() inserts the raw text, newlines and all, so a multi-line note breaks the one-row-per-note list.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 59,
+      "title": "Option to save notes in lowercase",
+      "kind": "feature",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 17,
+      "status": "duplicate",
+      "reason": "--lowercase is a workaround for case search #17."
+    },
+    {
+      "n": 60,
+      "title": "`jot rm 3` deleted the wrong note",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 32,
+      "status": "duplicate",
+      "reason": "rm hit wrong note: id reuse, same as #32."
+    },
+    {
+      "n": 61,
+      "title": "Docs: where are the notes on Windows?",
+      "kind": "docs",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "docs",
+      "status": "docs fix",
+      "reason": "Doc notes path on Windows + PowerShell JOT_FILE."
+    },
+    {
+      "n": 62,
+      "title": "Unexpected UTF-8 BOM after I edited notes.json in Notepad",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 16,
+      "status": "duplicate",
+      "reason": "BOM from Notepad; read side of the encoding fix."
+    },
+    {
+      "n": 63,
+      "title": "Fix a typo in a note without deleting it",
+      "kind": "feature",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 3,
+      "status": "duplicate",
+      "reason": "Change text without delete; same as #3."
+    },
+    {
+      "n": 64,
+      "title": "crash when adding a note",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 12,
+      "status": "duplicate",
+      "reason": "Vague crash on add; most likely the JSON crash."
+    },
+    {
+      "n": 65,
+      "title": "Delete several notes at once",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: rm/done accept several ids.",
+      "frame": {
+        "good": "Yes. Saves repeated commands.",
+        "whys": [
+          "rm/done take one id.",
+          "Cleanup needs many."
+        ],
+        "root": "id args are single-valued.",
+        "best": "Accept nargs='+' for rm/done. One test."
+      }
+    },
+    {
+      "n": 66,
+      "title": "What do the fields in notes.json mean? Is the format stable?",
+      "kind": "docs",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "docs",
+      "status": "docs fix",
+      "reason": "Document fields; created is UTC; format stability."
+    },
+    {
+      "n": 67,
+      "title": "Tags typed with # show as ##work and can't be filtered",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "Root: '#work' stored verbatim, shown as ##work.",
+      "frame": {
+        "good": "Yes. Breaks display and --tag filter.",
+        "whys": [
+          "User types #work.",
+          "jot stores it and prepends # on show."
+        ],
+        "root": "tags are not normalised (leading # kept).",
+        "best": "Strip a leading # on add. One test."
+      },
+      "repro": {
+        "cmd": "jot add hello --tag '#work'; jot list; jot list --tag work",
+        "out": "[ ]  1  ...  hello  ##work   (filter --tag work -> nothing)",
+        "note": "tag stored as \"#work\", shown ##work, not filterable",
+        "test": "factory/repro/test_67.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: tags are not normalised; a leading # is kept, so display doubles it (##work) and \"work\" never matches.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 68,
+      "title": "Use SQLite instead of one JSON file",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "SQLite swaps the one-JSON-file design.",
+      "lean": "Only at real scale; keeps stdlib. Your call."
+    },
+    {
+      "n": 69,
+      "title": "search only finds things if I type the exact capitals",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 17,
+      "status": "duplicate",
+      "reason": "Capitals-only match; same as #17."
+    },
+    {
+      "n": 70,
+      "title": "`jot` runs a different program on my Mac",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "A different 'jot' on PATH, not this jot.",
+      "lean": "PATH shadowing; ask `which jot`. python -m jot works."
+    },
+    {
+      "n": 71,
+      "title": "Add a `jot backup` command",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: copy notes.json to .bak.",
+      "frame": {
+        "good": "Yes. Guards against the corruption bugs.",
+        "whys": [
+          "Files get corrupted on power loss.",
+          "No safe copy today."
+        ],
+        "root": "No backup command.",
+        "best": "Add jot backup (copy to .bak). One subcommand, one test."
+      }
+    },
+    {
+      "n": 72,
+      "title": "My done notes vanished",
+      "kind": "question",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "Done notes hidden by default, not deleted.",
+      "lean": "Not deleted: jot list --all shows them. Also docs #75."
+    },
+    {
+      "n": 73,
+      "title": "BrokenPipeError when I pipe jot list into head",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "Piping to head raises BrokenPipeError.",
+      "frame": {
+        "good": "Yes. Output should pipe cleanly.",
+        "whys": [
+          "head closes the pipe early.",
+          "print keeps writing."
+        ],
+        "root": "No BrokenPipe handling in main().",
+        "best": "Catch BrokenPipe and exit quietly. One test."
+      },
+      "repro": {
+        "cmd": "jot list | <reader that closes the pipe early>",
+        "out": "BrokenPipeError: [Errno 32] Broken pipe",
+        "note": "reader (e.g. head) closing early kills jot",
+        "test": "factory/repro/test_73.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: main() does not handle BrokenPipeError on stdout, so piping list into head (or any early-closing reader) raises.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 74,
+      "title": "Rewrite jot in Rust",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Rust rewrite changes what jot is.",
+      "lean": "Out of scope: keep jot a tiny Python CLI."
+    },
+    {
+      "n": 75,
+      "title": "README doesn't say that `jot list` hides done notes",
+      "kind": "docs",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "docs",
+      "status": "docs fix",
+      "reason": "Say list hides done notes by default."
+    },
+    {
+      "n": 76,
+      "title": "`jot list --tag work` misses notes tagged Work",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "Root named: --tag match is case-sensitive.",
+      "frame": {
+        "good": "Yes. Work vs work splits a user's notes.",
+        "whys": [
+          "filter_notes compares tags exactly.",
+          "Case differs between entry and query."
+        ],
+        "root": "filter_notes() tag check is exact/case-sensitive.",
+        "best": "Fold case when matching tags. One test."
+      },
+      "repro": {
+        "cmd": "jot add hi --tag Work; jot list --tag work",
+        "out": "(no rows) - \"Work\" note not found by \"work\"",
+        "note": "exact, case-sensitive tag match",
+        "test": "factory/repro/test_76.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: filter_notes() compares tags exactly (tag in note[\"tags\"]), case-sensitive, so Work != work.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 77,
+      "title": "How do I back up my notes?",
+      "kind": "question",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 71,
+      "status": "duplicate",
+      "reason": "How to back up; answered by #71."
+    },
+    {
+      "n": 78,
+      "title": "Recurring notes",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Recurring notes add scheduling state.",
+      "lean": "Bigger than due dates; defer after #22."
+    },
+    {
+      "n": 79,
+      "title": "Cyrillic text crashes jot add on Windows",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 16,
+      "status": "duplicate",
+      "reason": "Cyrillic on Windows; same as #16."
+    },
+    {
+      "n": 80,
+      "title": "`jot tags` to list all my tags",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: jot tags lists tags with counts.",
+      "frame": {
+        "good": "Yes. People forget which tags exist.",
+        "whys": [
+          "No way to see all tags.",
+          "Tags live only on notes."
+        ],
+        "root": "No tags command.",
+        "best": "Add jot tags (name + count). One subcommand, one test."
+      }
+    },
+    {
+      "n": 81,
+      "title": "search is broken???",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 17,
+      "status": "duplicate",
+      "reason": "\"search broken\"; most likely case #17."
+    },
+    {
+      "n": 82,
+      "title": "jot saves an empty note",
+      "kind": "bug",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "bug",
+      "status": "reproduced",
+      "reason": "jot add '' saves a blank note.",
+      "frame": {
+        "good": "Yes. Scripts save blank notes silently.",
+        "whys": [
+          "add_note never checks text.",
+          "Empty string is accepted."
+        ],
+        "root": "add has no empty/blank text guard.",
+        "best": "Refuse empty/whitespace text. One test."
+      },
+      "repro": {
+        "cmd": "jot add \"\"; jot list",
+        "out": "added 1\n[ ]   1  ...  (blank)",
+        "note": "empty note saved",
+        "test": "factory/repro/test_82.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: add has no guard for empty/blank text, so a blank note is stored.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 83,
+      "title": "Check for a new version on every run",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Network call on every run; privacy cost.",
+      "lean": "Avoid network in a local CLI; lean no."
+    },
+    {
+      "n": 84,
+      "title": "One notes file per project?",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: per-folder .jot.json lookup.",
+      "frame": {
+        "good": "Yes. Clear, answers #10 too.",
+        "whys": [
+          "Want per-project notes.",
+          "Only one default file."
+        ],
+        "root": "No per-directory file discovery.",
+        "best": "Look for ./.jot.json upward, else default. One test."
+      }
+    },
+    {
+      "n": 85,
+      "title": "Print notes as a Markdown task list",
+      "kind": "feature",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 14,
+      "status": "duplicate",
+      "reason": "list --md task list; same need as #14."
+    },
+    {
+      "n": 86,
+      "title": "Notes I add in the evening show tomorrow's date",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 21,
+      "status": "duplicate",
+      "reason": "Tomorrow's date = UTC; see #21."
+    },
+    {
+      "n": 87,
+      "title": "Let me choose the ID when adding a note",
+      "kind": "feature",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "--id is a workaround for #32; fix ids first.",
+      "lean": "Fix id reuse (#32), not manual ids."
+    },
+    {
+      "n": 88,
+      "title": "PermissionError on Windows when my notes are in OneDrive",
+      "kind": "bug",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "cant_reproduce",
+      "needs": "cant_reproduce",
+      "status": "needs you",
+      "reason": "OneDrive transient lock on Windows.",
+      "lean": "Cloud-sync lock, not jot. Retry works; note in docs."
+    },
+    {
+      "n": 89,
+      "title": "Share a notes list with my team",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "Shared team list needs a server.",
+      "lean": "Out of scope; local tool only."
+    },
+    {
+      "n": 90,
+      "title": "Read the note text from stdin",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: read note text from stdin with '-'.",
+      "frame": {
+        "good": "Yes. Handy in scripts/pipes.",
+        "whys": [
+          "Text must be an argument.",
+          "Pipes are common."
+        ],
+        "root": "add can't read stdin.",
+        "best": "jot add - reads stdin. One small branch, one test."
+      }
+    },
+    {
+      "n": 91,
+      "title": "jot list shows weird characters",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 16,
+      "status": "duplicate",
+      "reason": "\"weird characters\"; same encoding family."
+    },
+    {
+      "n": 92,
+      "title": "Add a CHANGELOG",
+      "kind": "docs",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "docs",
+      "status": "docs fix",
+      "reason": "Add a CHANGELOG."
+    },
+    {
+      "n": 93,
+      "title": "`jot clear` to delete all notes",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: jot clear empties notes safely.",
+      "frame": {
+        "good": "Yes. Avoids the empty-file crash.",
+        "whys": [
+          "Users empty the file by hand.",
+          "That crashes load."
+        ],
+        "root": "No safe clear command.",
+        "best": "Add jot clear (write []). Pairs with #12. One test."
+      }
+    },
+    {
+      "n": 94,
+      "title": "nothing works after updating",
+      "kind": "bug",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 12,
+      "status": "duplicate",
+      "reason": "\"nothing works\"; matches the JSON crash family."
+    },
+    {
+      "n": 95,
+      "title": "jot search doesn't find notes by their tag",
+      "kind": "feature",
+      "size": "small",
+      "lane": "fix",
+      "verdict": "build",
+      "status": "reproduced",
+      "reason": "Make search look at tags too.",
+      "frame": {
+        "good": "Yes. Users expect search to see tags.",
+        "whys": [
+          "search_notes reads only text.",
+          "Tags are a separate field."
+        ],
+        "root": "search ignores the tags field.",
+        "best": "Search text and tags. One flag-free change, one test."
+      },
+      "repro": {
+        "cmd": "jot add groceries --tag shopping; jot search shopping",
+        "out": "(no rows) - tag not searched",
+        "note": "search ignores tags",
+        "test": "factory/repro/test_95.py",
+        "result": "FAILED",
+        "where": "your clone"
+      },
+      "details": "Cause: search_notes() only matches note[\"text\"], never note[\"tags\"], so a tag query finds nothing.",
+      "track": [
+        "sorted",
+        "reproduced",
+        "details"
+      ]
+    },
+    {
+      "n": 96,
+      "title": "jot where: print which notes file is used",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: jot where prints the notes path.",
+      "frame": {
+        "good": "Yes. JOT_FILE confusion is common.",
+        "whys": [
+          "Users can't tell which file is used.",
+          "notes_path is hidden."
+        ],
+        "root": "No way to print the active path.",
+        "best": "Add jot where (print notes_path). One test."
+      }
+    },
+    {
+      "n": 97,
+      "title": "Full-screen terminal UI",
+      "kind": "feature",
+      "size": "product",
+      "lane": "needs_you",
+      "verdict": "needs_you",
+      "needs": "product",
+      "status": "needs you",
+      "reason": "TUI is a large new surface.",
+      "lean": "Big scope; a plain CLI is the point. Your call."
+    },
+    {
+      "n": 98,
+      "title": "deadlines",
+      "kind": "feature",
+      "size": "small",
+      "lane": "duplicate",
+      "verdict": "duplicate",
+      "dup_of": 22,
+      "status": "duplicate",
+      "reason": "Deadlines + sort; same as #22."
+    },
+    {
+      "n": 99,
+      "title": "Can I rename a tag in all my notes at once?",
+      "kind": "feature",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "build",
+      "status": "waiting for OK",
+      "reason": "Fits: rename a tag across all notes.",
+      "frame": {
+        "good": "Yes. job -> work migration is common.",
+        "whys": [
+          "Tags are per note.",
+          "No bulk rename."
+        ],
+        "root": "No tag-rename command.",
+        "best": "Add jot tag-rename OLD NEW. One test."
+      }
+    },
+    {
+      "n": 100,
+      "title": "Does jot work in Termux on Android?",
+      "kind": "question",
+      "size": "small",
+      "lane": "needs_you",
+      "verdict": "needs_info",
+      "needs": "needs_info",
+      "status": "needs you",
+      "reason": "Termux works if Python present; no detail.",
+      "lean": "Should just work on Termux Python. Ask what failed."
+    },
+    {
+      "n": 101,
+      "title": "README: say that JOT_FILE should be a full path",
+      "kind": "docs",
+      "size": "small",
+      "lane": "triage",
+      "verdict": "docs",
+      "status": "docs fix",
+      "reason": "Say JOT_FILE must be a full path (see #55)."
+    }
+  ]
+}

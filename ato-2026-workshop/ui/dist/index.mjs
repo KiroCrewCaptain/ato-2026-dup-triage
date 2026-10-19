@@ -94,7 +94,7 @@ var STEPS = [
     lab: "Lab 1",
     title: "Sort the backlog",
     ghost: "pose-5.svg",
-    does: "Press Run now on your app\u2019s page. Its agent asks: good problem? five whys? first principles?",
+    does: "Press Run now on your app\u2019s page. Its agent sorts each issue using three checks: right problem, five whys, first principles.",
     see: "A board with lanes and counts. Each card has a verdict and a one-line reason."
   },
   {
@@ -572,7 +572,7 @@ function AtoWorkshop() {
       ] }),
       /* @__PURE__ */ jsxs("section", { className: "s rv", "aria-labelledby": "what-h", ref: whatRef, children: [
         /* @__PURE__ */ jsx("h2", { id: "what-h", className: "rvi", children: "What is a Kiro Crew app?" }),
-        /* @__PURE__ */ jsx("p", { className: "lead rvi", style: { ["--i"]: 1 }, children: "Skill and MCP make an agent plugin. Add the rest, and it is an app." }),
+        /* @__PURE__ */ jsx("p", { className: "lead rvi", style: { ["--i"]: 1 }, children: "Skills teach the agent. MCP connects tools. The page, timer and memory make it an app." }),
         /* @__PURE__ */ jsxs("div", { className: `build${built ? " on" : ""}`, children: [
           /* @__PURE__ */ jsxs("div", { className: "eq r1", role: "group", "aria-label": "Skill plus MCP equals Agent plugin", children: [
             PLUGIN.map((t, i) => /* @__PURE__ */ jsxs("div", { className: "frag", style: fly(R1[i]), children: [
@@ -684,7 +684,7 @@ function AtoWorkshop() {
       /* @__PURE__ */ jsx("section", { className: "s rv", "aria-labelledby": "share-h", children: /* @__PURE__ */ jsxs("div", { className: "card rvi", children: [
         /* @__PURE__ */ jsx("h2", { id: "share-h", style: { fontSize: 26 }, children: "Install this app on another laptop" }),
         /* @__PURE__ */ jsxs("p", { className: "see", children: [
-          "From GitHub, about 20 seconds. No GitHub sign-in; the laptop needs ",
+          "Install from GitHub. No sign-in needed; the laptop needs ",
           /* @__PURE__ */ jsx("code", { children: "git" }),
           "."
         ] }),

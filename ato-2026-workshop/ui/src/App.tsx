@@ -43,7 +43,7 @@ const STEPS: Step[] = [
     does: 'The guide copies Lab 1 into backlog-factory/ and installs your app, after your yes.',
     see: 'Backlog Factory in the sidebar, after you trust and enable it in Library.' },
   { id: 's3', n: 3, lab: 'Lab 1', title: 'Sort the backlog', ghost: 'pose-5.svg',
-    does: 'Press Run now on your app’s page. Its agent asks: good problem? five whys? first principles?',
+    does: 'Press Run now on your app’s page. Its agent sorts each issue using three checks: right problem, five whys, first principles.',
     see: 'A board with lanes and counts. Each card has a verdict and a one-line reason.' },
   { id: 's4', n: 4, lab: 'Lab 2', title: 'Reproduce with helpers', ghost: 'pose-7.svg',
     does: 'Your app splits the bugs across helper agents. Each runs jot in your folder and pastes the real output.',
@@ -490,7 +490,7 @@ export default function AtoWorkshop() {
 
         <section className="s rv" aria-labelledby="what-h" ref={whatRef}>
           <h2 id="what-h" className="rvi">What is a Kiro Crew app?</h2>
-          <p className="lead rvi" style={{ ['--i' as string]: 1 }}>Skill and MCP make an agent plugin. Add the rest, and it is an app.</p>
+          <p className="lead rvi" style={{ ['--i' as string]: 1 }}>Skills teach the agent. MCP connects tools. The page, timer and memory make it an app.</p>
           <div className={`build${built ? ' on' : ''}`}>
             <div className="eq r1" role="group" aria-label="Skill plus MCP equals Agent plugin">
               {PLUGIN.map((t, i) => (
@@ -592,7 +592,7 @@ export default function AtoWorkshop() {
         <section className="s rv" aria-labelledby="share-h">
           <div className="card rvi">
             <h2 id="share-h" style={{ fontSize: 26 }}>Install this app on another laptop</h2>
-            <p className="see">From GitHub, about 20 seconds. No GitHub sign-in; the laptop needs <code>git</code>.</p>
+            <p className="see">Install from GitHub. No sign-in needed; the laptop needs <code>git</code>.</p>
             <ol className="howto">
               <li><b>Discover</b> → database icon (<b>Manage app sources</b>) → <b>Add Registry</b></li>
               <li>Repo: <code>https://github.com/{BASE_REPO}</code> → <b>Add Registry</b></li>
