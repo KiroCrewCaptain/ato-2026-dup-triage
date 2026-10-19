@@ -1,6 +1,6 @@
 # Backlog Factory, Lab 3: Fix ⇄ Review
 
-The app after Lab 3 (v0.3.0) = Lab 2 plus:
+The app after Lab 3 (v0.3.0) = Lab 2 (including the `factory-reproducer` helper) plus:
 
 | Part | What it does |
 |---|---|

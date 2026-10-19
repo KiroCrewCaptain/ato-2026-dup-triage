@@ -14,6 +14,27 @@ var LANES = [
   { id: "ready", label: "Ready to merge", tone: "green" },
   { id: "needs_you", label: "Needs you", tone: "gold" }
 ];
+var KNOWN = /* @__PURE__ */ new Set(["inbox", "triage", "reproduce", "fix", "ready", "needs_you", "rejected", "duplicate"]);
+var ALIAS = {
+  "factory-triage": "triage",
+  "factory-reproduce": "reproduce",
+  "factory-fix-review": "fix",
+  docs: "triage",
+  build: "triage",
+  reframe: "triage",
+  review: "fix",
+  fixing: "fix",
+  "in_review": "fix",
+  "needs-you": "needs_you",
+  needs_info: "needs_you",
+  reject: "rejected",
+  dup: "duplicate"
+};
+function laneOf(c) {
+  const raw = String(c.lane || "inbox").trim().toLowerCase();
+  if (KNOWN.has(raw)) return raw;
+  return ALIAS[raw] || "inbox";
+}
 var TABS = ["Board", "Bugs", "Features", "Needs you"];
 function isLight(sdkMode) {
   const r = typeof document !== "undefined" ? document.documentElement.dataset.mode : "";
@@ -120,6 +141,10 @@ function Chips({ c }) {
     c.dup_of && /* @__PURE__ */ jsxs("span", { className: "chip", children: [
       "dup of #",
       c.dup_of
+    ] }),
+    c.lane && !KNOWN.has(String(c.lane).trim().toLowerCase()) && /* @__PURE__ */ jsxs("span", { className: "chip y", title: "This lane is not one the board knows", children: [
+      "lane: ",
+      c.lane
     ] })
   ] });
 }
@@ -166,7 +191,7 @@ function BacklogFactory() {
     };
   }, [load, api]);
   const issues = board?.issues || [];
-  const by = (lane) => issues.filter((c) => (c.lane || "inbox") === lane);
+  const by = (lane) => issues.filter((c) => laneOf(c) === lane);
   const decisions = board?.decisions || {};
   const counts = useMemo(() => ({
     open: issues.length,
@@ -255,7 +280,7 @@ function BacklogFactory() {
           /* @__PURE__ */ jsx("span", { children: L.label }),
           /* @__PURE__ */ jsx("span", { children: cards.length })
         ] }),
-        cards.map((c, i) => /* @__PURE__ */ jsxs("article", { className: `card rv ${c.lane === "fix" ? "hot" : ""}`, style: { ["--i"]: i }, children: [
+        cards.map((c, i) => /* @__PURE__ */ jsxs("article", { className: `card rv ${laneOf(c) === "fix" ? "hot" : ""}`, style: { ["--i"]: i }, children: [
           /* @__PURE__ */ jsx("div", { className: "num", children: /* @__PURE__ */ jsxs("a", { href: issueUrl(board?.repo, c.n), target: "_blank", rel: "noreferrer", children: [
             "#",
             c.n
@@ -263,7 +288,7 @@ function BacklogFactory() {
           /* @__PURE__ */ jsx("div", { className: "t", children: c.title }),
           /* @__PURE__ */ jsx(Chips, { c }),
           c.reason && /* @__PURE__ */ jsx("div", { className: "why", children: c.reason }),
-          c.kind === "bug" && c.lane !== "inbox" && /* @__PURE__ */ jsx("button", { style: { marginTop: 6, fontSize: 13, padding: "4px 10px" }, onClick: () => {
+          c.kind === "bug" && laneOf(c) !== "inbox" && /* @__PURE__ */ jsx("button", { style: { marginTop: 6, fontSize: 13, padding: "4px 10px" }, onClick: () => {
             setPick(c.n);
             setTab("Bugs");
           }, children: "Details" })
@@ -289,11 +314,11 @@ function BacklogFactory() {
       ] })
     ] })
   ] });
-  const bugs = issues.filter((c) => c.kind === "bug" && !["duplicate", "inbox"].includes(c.lane || ""));
+  const bugs = issues.filter((c) => c.kind === "bug" && !["duplicate", "inbox"].includes(laneOf(c)));
   const BugView = () => {
-    const c = bugs.find((b) => b.n === pick) || bugs.find((b) => b.lane === "ready") || bugs.find((b) => b.lane === "fix") || bugs[0];
+    const c = bugs.find((b) => b.n === pick) || bugs.find((b) => laneOf(b) === "ready") || bugs.find((b) => laneOf(b) === "fix") || bugs[0];
     if (!c) return /* @__PURE__ */ jsx("p", { className: "why", children: "No bugs sorted yet. Run the factory first." });
-    const steps = [["Sorted: bug", true], ["Reproduced", !!c.repro?.result], ["Details added", !!c.details], [`Fix \u21C4 Review${c.fix?.rounds?.length ? ` \xB7 round ${c.fix.rounds.length}` : ""}`, c.lane === "ready"], ["Ready to merge", c.lane === "ready"], ["You merge", false]];
+    const steps = [["Sorted: bug", true], ["Reproduced", !!c.repro?.result], ["Details added", !!c.details], [`Fix \u21C4 Review${c.fix?.rounds?.length ? ` \xB7 round ${c.fix.rounds.length}` : ""}`, laneOf(c) === "ready"], ["Ready to merge", laneOf(c) === "ready"], ["You merge", false]];
     const nowIdx = steps.findIndex(([, d]) => !d);
     return /* @__PURE__ */ jsxs("div", { className: "two", children: [
       /* @__PURE__ */ jsx("nav", { className: "list", "aria-label": "Bugs", children: bugs.map((b) => /* @__PURE__ */ jsxs("button", { "aria-current": b.n === c.n, onClick: () => setPick(b.n), children: [
@@ -370,7 +395,7 @@ new test: ${c.repro.test}  ${c.repro.result || ""}` : ""
               ] }),
               !c.fix?.rounds?.length && /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("span", { className: "why", children: "No rounds yet." }) })
             ] }),
-            c.lane === "ready" && /* @__PURE__ */ jsxs("div", { className: "ready", children: [
+            laneOf(c) === "ready" && /* @__PURE__ */ jsxs("div", { className: "ready", children: [
               /* @__PURE__ */ jsx("b", { className: "ok", children: "Ready for you" }),
               /* @__PURE__ */ jsx("p", { className: "why", children: "Review is green. Read the diff, then merge it yourself." }),
               /* @__PURE__ */ jsxs("div", { className: "row", children: [
@@ -384,7 +409,7 @@ new test: ${c.repro.test}  ${c.repro.result || ""}` : ""
       ] })
     ] });
   };
-  const feats = issues.filter((c) => (c.kind === "feature" || c.kind === "docs") && c.frame && ["triage", "needs_you", "rejected"].includes(c.lane || ""));
+  const feats = issues.filter((c) => (c.kind === "feature" || c.kind === "docs") && c.frame && ["triage", "needs_you", "rejected", "inbox"].includes(laneOf(c)));
   const VERDICT = {
     build: ["Build it", "Goes to the fixer."],
     reframe: ["Reframe it", "Solve the root, not the ask."],
@@ -400,7 +425,7 @@ new test: ${c.repro.test}  ${c.repro.result || ""}` : ""
     ] }),
     !feats.length && /* @__PURE__ */ jsx("p", { className: "why", children: "No features sorted yet. Run the factory first." }),
     /* @__PURE__ */ jsx("div", { className: "feats", children: feats.map((c, i) => {
-      const v = c.verdict && VERDICT[c.verdict] ? c.verdict : c.lane === "needs_you" ? "needs_you" : c.lane === "rejected" ? "reject" : "build";
+      const v = c.verdict && VERDICT[c.verdict] ? c.verdict : laneOf(c) === "needs_you" ? "needs_you" : laneOf(c) === "rejected" ? "reject" : "build";
       return /* @__PURE__ */ jsxs("article", { className: "feat rv", style: { ["--i"]: i }, children: [
         /* @__PURE__ */ jsxs("div", { className: "num", children: [
           "#",

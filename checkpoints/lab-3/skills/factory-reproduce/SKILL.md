@@ -29,8 +29,8 @@ skip them to save the person a click; the Allow click is part of the lesson.
 Your yes/no question must name them, for example "I will start 2 helpers: #12 #49 and
 #16 #58, then update board.json. OK? (yes / no)". After the yes, your FIRST action is
 `spawn_run` with those batches. Do not reproduce them yourself first.
-Split the bugs into batches of 2 to 3 and start one helper per batch with `spawn_run`
-and NO `cwd` (Kiro Crew 0.9.0 accepts a `cwd` only under `~/workspace`, `~/workplace` and
+Split the bugs into batches of 2 to 3 and start one helper per batch with `spawn_run`,
+`agent: "factory-reproducer"`, and NO `cwd` (Kiro Crew 0.9.0 accepts a `cwd` only under `~/workspace`, `~/workplace` and
 similar roots; the repo folder may be anywhere). Each helper's task gets: the repo
 folder's ABSOLUTE path with "start every shell command with cd <that path>", its issue
 numbers, the issue texts, and rules 1-4 above. Each helper replies with JSON per issue: `n`, `cmd`, `out`, `test`, `result`,
@@ -59,7 +59,7 @@ Then set:
 - reproduced → `lane: "fix"`, `status: "reproduced"`, `track: ["sorted","reproduced","details"]`
 - not reproducible here → `lane: "needs_you"`, `needs: "cant_reproduce"`, a one-line
   `reply` the person could send the reporter (they copy it; you never post it)
-- works as designed → move to `factory-triage` as a feature with a `frame`, verdict `reframe`
+- works as designed → set `lane: "triage"` as a feature with a `frame`, verdict `reframe`
 
 Rewrite `board.json` after each helper's reply. At the end: `run.step = "reproduce done"`.
 

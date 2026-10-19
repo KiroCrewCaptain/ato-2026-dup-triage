@@ -7,7 +7,8 @@
   "license": "Apache-2.0",
   "iconPath": "assets/icon.png",
   "agents": [
-    "agents/backlog-factory.json"
+    "agents/backlog-factory.json",
+    "agents/factory-reproducer.json"
   ],
   "skills": [
     "skills/factory-triage",

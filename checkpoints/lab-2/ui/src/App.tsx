@@ -41,6 +41,19 @@ const LANES: { id: string; label: string; tone?: string }[] = [
   { id: 'ready', label: 'Ready to merge', tone: 'green' },
   { id: 'needs_you', label: 'Needs you', tone: 'gold' },
 ]
+const KNOWN = new Set(['inbox', 'triage', 'reproduce', 'fix', 'ready', 'needs_you', 'rejected', 'duplicate'])
+const ALIAS: Record<string, string> = {
+  'factory-triage': 'triage', 'factory-reproduce': 'reproduce', 'factory-fix-review': 'fix', docs: 'triage',
+  build: 'triage', reframe: 'triage', review: 'fix', fixing: 'fix', 'in_review': 'fix', 'needs-you': 'needs_you',
+  needs_info: 'needs_you', reject: 'rejected', dup: 'duplicate',
+}
+// Every card lands in a column: a lane the page does not know goes to Inbox (with a chip
+// naming the lane it had), so a misspelled lane can never hide a card.
+function laneOf(c: { lane?: string }): string {
+  const raw = String(c.lane || 'inbox').trim().toLowerCase()
+  if (KNOWN.has(raw)) return raw
+  return ALIAS[raw] || 'inbox'
+}
 const TABS = ['Board', 'Bugs', 'Features', 'Needs you'] as const
 type Tab = (typeof TABS)[number]
 
@@ -150,6 +163,7 @@ function Chips({ c }: { c: Card }) {
       {c.size && <span className="chip">{c.size === 'product' ? 'product' : c.size}</span>}
       {c.status && <span className={`chip ${/green|reproduced/.test(c.status) ? 'g' : /round|fixing|review/.test(c.status) ? 'y' : ''}`}>{c.status}</span>}
       {c.dup_of && <span className="chip">dup of #{c.dup_of}</span>}
+      {c.lane && !KNOWN.has(String(c.lane).trim().toLowerCase()) && <span className="chip y" title="This lane is not one the board knows">lane: {c.lane}</span>}
     </div>
   )
 }
@@ -189,7 +203,7 @@ export default function BacklogFactory() {
   }, [load, api])
 
   const issues = board?.issues || []
-  const by = (lane: string) => issues.filter((c) => (c.lane || 'inbox') === lane)
+  const by = (lane: string) => issues.filter((c) => laneOf(c) === lane)
   const decisions = board?.decisions || {}
   const counts = useMemo(() => ({
     open: issues.length,
@@ -272,12 +286,12 @@ export default function BacklogFactory() {
             <section key={L.id} className={`lane ${L.tone || ''}`} aria-label={`${L.label}, ${cards.length} issues`}>
               <h3><span>{L.label}</span><span>{cards.length}</span></h3>
               {cards.map((c, i) => (
-                <article key={c.n} className={`card rv ${c.lane === 'fix' ? 'hot' : ''}`} style={{ ['--i' as any]: i }}>
+                <article key={c.n} className={`card rv ${laneOf(c) === 'fix' ? 'hot' : ''}`} style={{ ['--i' as any]: i }}>
                   <div className="num"><a href={issueUrl(board?.repo, c.n)} target="_blank" rel="noreferrer">#{c.n}</a></div>
                   <div className="t">{c.title}</div>
                   <Chips c={c} />
                   {c.reason && <div className="why">{c.reason}</div>}
-                  {(c.kind === 'bug' && c.lane !== 'inbox') && <button style={{ marginTop: 6, fontSize: 13, padding: '4px 10px' }} onClick={() => { setPick(c.n); setTab('Bugs') }}>Details</button>}
+                  {(c.kind === 'bug' && laneOf(c) !== 'inbox') && <button style={{ marginTop: 6, fontSize: 13, padding: '4px 10px' }} onClick={() => { setPick(c.n); setTab('Bugs') }}>Details</button>}
                 </article>
               ))}
             </section>
@@ -291,11 +305,11 @@ export default function BacklogFactory() {
     </>
   )
 
-  const bugs = issues.filter((c) => c.kind === 'bug' && !['duplicate', 'inbox'].includes(c.lane || ''))
+  const bugs = issues.filter((c) => c.kind === 'bug' && !['duplicate', 'inbox'].includes(laneOf(c)))
   const BugView = () => {
-    const c = bugs.find((b) => b.n === pick) || bugs.find((b) => b.lane === 'ready') || bugs.find((b) => b.lane === 'fix') || bugs[0]
+    const c = bugs.find((b) => b.n === pick) || bugs.find((b) => laneOf(b) === 'ready') || bugs.find((b) => laneOf(b) === 'fix') || bugs[0]
     if (!c) return <p className="why">No bugs sorted yet. Run the factory first.</p>
-    const steps = [['Sorted: bug', true], ['Reproduced', !!c.repro?.result], ['Details added', !!c.details], [`Fix ⇄ Review${c.fix?.rounds?.length ? ` · round ${c.fix.rounds.length}` : ''}`, c.lane === 'ready'], ['Ready to merge', c.lane === 'ready'], ['You merge', false]] as const
+    const steps = [['Sorted: bug', true], ['Reproduced', !!c.repro?.result], ['Details added', !!c.details], [`Fix ⇄ Review${c.fix?.rounds?.length ? ` · round ${c.fix.rounds.length}` : ''}`, laneOf(c) === 'ready'], ['Ready to merge', laneOf(c) === 'ready'], ['You merge', false]] as const
     const nowIdx = steps.findIndex(([, d]) => !d)
     return (
       <div className="two">
@@ -328,7 +342,7 @@ export default function BacklogFactory() {
                 {c.fix?.branch && <div><span className="num">branch</span><span className="chip">{c.fix.branch}</span><span className="why">local · not pushed</span></div>}
                 {!c.fix?.rounds?.length && <div><span className="why">No rounds yet.</span></div>}
               </div>
-              {c.lane === 'ready' && (
+              {laneOf(c) === 'ready' && (
                 <div className="ready">
                   <b className="ok">Ready for you</b>
                   <p className="why">Review is green. Read the diff, then merge it yourself.</p>
@@ -346,7 +360,7 @@ export default function BacklogFactory() {
     )
   }
 
-  const feats = issues.filter((c) => (c.kind === 'feature' || c.kind === 'docs') && c.frame && ['triage', 'needs_you', 'rejected'].includes(c.lane || ''))
+  const feats = issues.filter((c) => (c.kind === 'feature' || c.kind === 'docs') && c.frame && ['triage', 'needs_you', 'rejected', 'inbox'].includes(laneOf(c)))
   const VERDICT: Record<string, [string, string]> = {
     build: ['Build it', 'Goes to the fixer.'], reframe: ['Reframe it', 'Solve the root, not the ask.'],
     needs_you: ['Needs you', 'Product-level. Your call.'], reject: ['Reject', 'Not a good problem for jot.'],
@@ -357,7 +371,7 @@ export default function BacklogFactory() {
       {!feats.length && <p className="why">No features sorted yet. Run the factory first.</p>}
       <div className="feats">
         {feats.map((c, i) => {
-          const v = c.verdict && VERDICT[c.verdict] ? c.verdict : c.lane === 'needs_you' ? 'needs_you' : c.lane === 'rejected' ? 'reject' : 'build'
+          const v = c.verdict && VERDICT[c.verdict] ? c.verdict : laneOf(c) === 'needs_you' ? 'needs_you' : laneOf(c) === 'rejected' ? 'reject' : 'build'
           return (
             <article key={c.n} className="feat rv" style={{ ['--i' as any]: i }}>
               <div className="num">#{c.n} · {c.kind}</div>

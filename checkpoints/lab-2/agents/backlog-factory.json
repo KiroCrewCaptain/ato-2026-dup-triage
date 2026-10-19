@@ -12,6 +12,11 @@
     "@kirocrew-core"
   ],
   "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "factory-reproducer"
+      ]
+    },
     "shell": {
       "deniedCommands": [
         "gh issue (comment|edit|close|reopen|lock|unlock|create|delete|transfer|pin|unpin|develop).*",

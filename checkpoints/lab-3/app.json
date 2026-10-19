@@ -8,6 +8,7 @@
   "iconPath": "assets/icon.png",
   "agents": [
     "agents/backlog-factory.json",
+    "agents/factory-reproducer.json",
     "agents/factory-fixer.json",
     "agents/factory-reviewer.json"
   ],
