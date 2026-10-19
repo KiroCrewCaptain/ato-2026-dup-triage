@@ -35,6 +35,7 @@
   "crons": [
     {
       "name": "factory-weekday",
+      "agent": "backlog-factory",
       "cron_expr": "0 7 * * 1-5",
       "timezone": "America/New_York",
       "message": "Run one Backlog Factory pass: follow the factory-triage skill on the repo folder saved on the Backlog Factory page. Scheduled run: sort only, write nothing to GitHub.",

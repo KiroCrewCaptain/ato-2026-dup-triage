@@ -16,6 +16,7 @@
   "crons": [
     {
       "name": "dup-triage-daily",
+      "agent": "dup-triage",
       "cron_expr": "0 7 * * 1-5",
       "timezone": "America/New_York",
       "message": "Use the dup-triage skill on the open issues of KiroCrewCaptain/ato-2026-dup-triage. Write dup-triage-report.md. Post nothing.",
