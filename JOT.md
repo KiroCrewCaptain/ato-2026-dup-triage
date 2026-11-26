@@ -32,7 +32,7 @@ Use tags to keep seperate lists in one file.
 
 ## Where notes live
 
-`~/.jot/notes.json`, or the path in the `JOT_FILE` environment variable.
+`~/.jot/notes.json`, or the path in the `JOT_FILE` environment variable. `JOT_FILE` should be a full path: a relative path such as `notes.json` creates a separate notes file in every directory, and `~` is not expanded when the variable is set outside a shell.
 
 ## Tests
 
