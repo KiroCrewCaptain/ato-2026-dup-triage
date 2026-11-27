@@ -146,7 +146,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             notes.remove(note)
         save_notes(path, notes)
-        print(f"{args.command} {args.id}")
+        print(f"{'removed' if args.command == 'rm' else args.command} {args.id}")
     elif args.command == "export":
         json.dump(notes, sys.stdout, indent=2, ensure_ascii=False)
         print()
