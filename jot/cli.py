@@ -26,7 +26,7 @@ def notes_path() -> Path:
     """Where the notes file lives."""
     env = os.environ.get("JOT_FILE")
     if env:
-        return Path(env)
+        return Path(env).expanduser()
     return Path.home() / ".jot" / "notes.json"
 
 
