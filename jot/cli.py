@@ -124,7 +124,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     path = notes_path()
-    notes = load_notes(path)
+    try:
+        notes = load_notes(path)
+    except PermissionError:
+        print(f"cannot read notes file: {path}", file=sys.stderr)
+        return 1
 
     if args.command == "add":
         note = add_note(notes, args.text, args.tag)
