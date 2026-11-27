@@ -45,6 +45,11 @@ class TestStorage(JotTestCase):
     def test_jot_file_env_wins(self):
         self.assertEqual(cli.notes_path(), self.path)
 
+    def test_where_prints_notes_path(self):
+        code, out = self.run_jot("where")
+        self.assertEqual(code, 0)
+        self.assertEqual(out.strip(), str(self.path))
+
 
 class TestCommands(JotTestCase):
     def test_add_then_list(self):
