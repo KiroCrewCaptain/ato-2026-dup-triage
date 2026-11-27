@@ -72,8 +72,9 @@ def find_note(notes: list[dict], note_id: int) -> dict | None:
 
 
 def search_notes(notes: list[dict], query: str) -> list[dict]:
-    # Plain substring match, case-sensitive.
-    return [n for n in notes if query in n["text"]]
+    # Plain substring match, case-sensitive. A query also matches a note's
+    # tags, not just its text (issue #95).
+    return [n for n in notes if query in n["text"] or query in n["tags"]]
 
 
 def filter_notes(notes: list[dict], tag: str | None = None, show_all: bool = False) -> list[dict]:

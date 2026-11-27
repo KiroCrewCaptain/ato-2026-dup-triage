@@ -74,6 +74,13 @@ class TestCommands(JotTestCase):
         _, out = self.run_jot("search", "dentist")
         self.assertIn("dentist", out)
 
+    def test_search_finds_notes_by_tag(self):
+        self.run_jot("add", "call the dentist", "--tag", "health")
+        self.run_jot("add", "buy milk", "--tag", "home")
+        _, out = self.run_jot("search", "health")
+        self.assertIn("call the dentist", out)
+        self.assertNotIn("buy milk", out)
+
     def test_rm_unknown_id(self):
         code, _ = self.run_jot("rm", "42")
         self.assertEqual(code, 1)
