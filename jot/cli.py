@@ -22,6 +22,10 @@ from pathlib import Path
 __version__ = "0.3.1"
 
 
+class NotesFileError(Exception):
+    """The notes file exists but cannot be read as a list of notes."""
+
+
 def notes_path() -> Path:
     """Where the notes file lives."""
     env = os.environ.get("JOT_FILE")
@@ -31,13 +35,23 @@ def notes_path() -> Path:
 
 
 def load_notes(path: Path) -> list[dict]:
-    """Read every note. A missing file means no notes yet."""
+    """Read every note. A missing or empty file means no notes yet."""
     if not path.exists():
         return []
-    # Known limits (see the issue tracker): no explicit encoding, and an
-    # empty or truncated file raises instead of being handled.
     with open(path) as fh:
-        return json.load(fh)
+        text = fh.read()
+    if not text.strip():
+        return []
+    try:
+        notes = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise NotesFileError(
+            f"notes file is not valid JSON: {path} "
+            f"(line {exc.lineno}, column {exc.colno})"
+        ) from exc
+    if not isinstance(notes, list):
+        raise NotesFileError(f"notes file must contain a JSON list: {path}")
+    return notes
 
 
 def save_notes(path: Path, notes: list[dict]) -> None:
@@ -124,7 +138,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     path = notes_path()
-    notes = load_notes(path)
+    try:
+        notes = load_notes(path)
+    except NotesFileError as exc:
+        print(exc, file=sys.stderr)
+        return 1
 
     if args.command == "add":
         note = add_note(notes, args.text, args.tag)

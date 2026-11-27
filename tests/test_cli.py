@@ -5,7 +5,7 @@ import json
 import os
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 from jot import cli
@@ -44,6 +44,23 @@ class TestStorage(JotTestCase):
 
     def test_jot_file_env_wins(self):
         self.assertEqual(cli.notes_path(), self.path)
+
+    def test_empty_file_means_no_notes(self):
+        self.path.write_text("", encoding="utf-8")
+        self.assertEqual(cli.load_notes(self.path), [])
+
+    def test_truncated_file_raises_clear_error(self):
+        self.path.write_text('[{"id": 1, "text": "unterminated', encoding="utf-8")
+        with self.assertRaises(cli.NotesFileError):
+            cli.load_notes(self.path)
+
+    def test_main_reports_corrupt_file_without_a_traceback(self):
+        self.path.write_text("{", encoding="utf-8")
+        err = io.StringIO()
+        with redirect_stderr(err):
+            code = cli.main(["list"])
+        self.assertEqual(code, 1)
+        self.assertIn("not valid JSON", err.getvalue())
 
 
 class TestCommands(JotTestCase):
