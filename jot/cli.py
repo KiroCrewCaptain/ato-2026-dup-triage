@@ -8,6 +8,7 @@ Notes live in one JSON file: $JOT_FILE, or ~/.jot/notes.json by default.
     jot done ID
     jot rm ID
     jot export [--format json]
+    jot tags                 # tags with note counts
 """
 
 from __future__ import annotations
@@ -118,6 +119,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_export = sub.add_parser("export", help="print all notes")
     p_export.add_argument("--format", choices=["json"], default="json")
+    sub.add_parser("tags", help="list tags with note counts")
     return parser
 
 
@@ -150,6 +152,13 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "export":
         json.dump(notes, sys.stdout, indent=2, ensure_ascii=False)
         print()
+    elif args.command == "tags":
+        counts: dict[str, int] = {}
+        for note in notes:
+            for tag in note.get("tags", []):
+                counts[tag] = counts.get(tag, 0) + 1
+        for tag in sorted(counts, key=lambda name: (-counts[name], name)):
+            print(f"{tag} {counts[tag]}")
     return 0
 
 
