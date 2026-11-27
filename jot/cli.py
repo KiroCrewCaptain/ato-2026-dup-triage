@@ -126,30 +126,38 @@ def main(argv: list[str] | None = None) -> int:
     path = notes_path()
     notes = load_notes(path)
 
-    if args.command == "add":
-        note = add_note(notes, args.text, args.tag)
-        save_notes(path, notes)
-        print(f"added {note['id']}")
-    elif args.command == "list":
-        for note in filter_notes(notes, args.tag, args.all):
-            print(format_note(note))
-    elif args.command == "search":
-        for note in search_notes(notes, args.query):
-            print(format_note(note))
-    elif args.command in ("done", "rm"):
-        note = find_note(notes, args.id)
-        if note is None:
-            print(f"no note {args.id}", file=sys.stderr)
-            return 1
-        if args.command == "done":
-            note["done"] = True
-        else:
-            notes.remove(note)
-        save_notes(path, notes)
-        print(f"{args.command} {args.id}")
-    elif args.command == "export":
-        json.dump(notes, sys.stdout, indent=2, ensure_ascii=False)
-        print()
+    try:
+        if args.command == "add":
+            note = add_note(notes, args.text, args.tag)
+            save_notes(path, notes)
+            print(f"added {note['id']}")
+        elif args.command == "list":
+            for note in filter_notes(notes, args.tag, args.all):
+                print(format_note(note))
+        elif args.command == "search":
+            for note in search_notes(notes, args.query):
+                print(format_note(note))
+        elif args.command in ("done", "rm"):
+            note = find_note(notes, args.id)
+            if note is None:
+                print(f"no note {args.id}", file=sys.stderr)
+                return 1
+            if args.command == "done":
+                note["done"] = True
+            else:
+                notes.remove(note)
+            save_notes(path, notes)
+            print(f"{args.command} {args.id}")
+        elif args.command == "export":
+            json.dump(notes, sys.stdout, indent=2, ensure_ascii=False)
+            print()
+    except BrokenPipeError:
+        # Downstream consumer (e.g. `head`) closed the pipe; exit quietly.
+        try:
+            sys.stdout.close()
+        except BrokenPipeError:
+            pass
+        return 0
     return 0
 
 
