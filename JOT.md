@@ -26,6 +26,7 @@ jot search slides
 jot done 1
 jot rm 2
 jot export               # all notes as JSON
+jot tags                 # tags with note counts
 ```
 
 Use tags to keep seperate lists in one file.

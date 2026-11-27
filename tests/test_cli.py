@@ -86,3 +86,17 @@ class TestCommands(JotTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class TestTags(JotTestCase):
+    def test_tags_with_counts(self):
+        self.run_jot("add", "one", "--tag", "home")
+        self.run_jot("add", "two", "--tag", "work", "--tag", "home")
+        code, out = self.run_jot("tags")
+        self.assertEqual(code, 0)
+        self.assertIn("home 2", out)
+        self.assertIn("work 1", out)
+
+    def test_tags_empty(self):
+        code, out = self.run_jot("tags")
+        self.assertEqual(code, 0)
+        self.assertEqual(out, "")
