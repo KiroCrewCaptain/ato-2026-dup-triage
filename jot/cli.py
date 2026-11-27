@@ -131,7 +131,10 @@ def main(argv: list[str] | None = None) -> int:
         save_notes(path, notes)
         print(f"added {note['id']}")
     elif args.command == "list":
-        for note in filter_notes(notes, args.tag, args.all):
+        shown = filter_notes(notes, args.tag, args.all)
+        if not shown:
+            print("no notes yet")
+        for note in shown:
             print(format_note(note))
     elif args.command == "search":
         for note in search_notes(notes, args.query):
