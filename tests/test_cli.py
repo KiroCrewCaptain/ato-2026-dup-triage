@@ -74,6 +74,11 @@ class TestCommands(JotTestCase):
         _, out = self.run_jot("search", "dentist")
         self.assertIn("dentist", out)
 
+    def test_search_is_case_insensitive(self):
+        self.run_jot("add", "Buy Groceries")
+        _, out = self.run_jot("search", "groceries")
+        self.assertIn("Buy Groceries", out)
+
     def test_rm_unknown_id(self):
         code, _ = self.run_jot("rm", "42")
         self.assertEqual(code, 1)
