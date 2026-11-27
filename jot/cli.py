@@ -8,6 +8,7 @@ Notes live in one JSON file: $JOT_FILE, or ~/.jot/notes.json by default.
     jot done ID
     jot rm ID
     jot export [--format json]
+    jot where
 """
 
 from __future__ import annotations
@@ -118,6 +119,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_export = sub.add_parser("export", help="print all notes")
     p_export.add_argument("--format", choices=["json"], default="json")
+
+    sub.add_parser("where", help="print the notes file path jot is using")
     return parser
 
 
@@ -150,6 +153,8 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "export":
         json.dump(notes, sys.stdout, indent=2, ensure_ascii=False)
         print()
+    elif args.command == "where":
+        print(notes_path())
     return 0
 
 
