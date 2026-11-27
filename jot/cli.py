@@ -34,9 +34,9 @@ def load_notes(path: Path) -> list[dict]:
     """Read every note. A missing file means no notes yet."""
     if not path.exists():
         return []
-    # Known limits (see the issue tracker): no explicit encoding, and an
-    # empty or truncated file raises instead of being handled.
-    with open(path) as fh:
+    # utf-8-sig strips a UTF-8 BOM written by editors such as Notepad.
+    # Empty and truncated files are still left to the caller (see the tracker).
+    with open(path, encoding="utf-8-sig") as fh:
         return json.load(fh)
 
 

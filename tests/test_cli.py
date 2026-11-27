@@ -42,6 +42,12 @@ class TestStorage(JotTestCase):
         cli.save_notes(self.path, notes)
         self.assertEqual(cli.load_notes(self.path)[0]["text"], "buy milk")
 
+    def test_bom_prefixed_notes_file_loads(self):
+        notes = []
+        cli.add_note(notes, "buy milk", ["home"])
+        self.path.write_text("\ufeff" + json.dumps(notes), encoding="utf-8")
+        self.assertEqual(cli.load_notes(self.path)[0]["text"], "buy milk")
+
     def test_jot_file_env_wins(self):
         self.assertEqual(cli.notes_path(), self.path)
 
