@@ -46,6 +46,23 @@ class TestStorage(JotTestCase):
         self.assertEqual(cli.notes_path(), self.path)
 
 
+class TestNextId(JotTestCase):
+    def test_id_is_not_reused_while_still_in_use(self):
+        self.run_jot("add", "first")
+        self.run_jot("add", "second")
+        self.run_jot("add", "third")
+        self.run_jot("rm", "2")
+        self.run_jot("add", "fourth")
+        _, out = self.run_jot("list")
+        self.assertIn("  1 ", out)
+        self.assertIn("  3 ", out)
+        self.assertIn("  4 ", out)
+        self.assertNotIn("  2 ", out)
+
+    def test_next_id_starts_at_one_when_empty(self):
+        self.assertEqual(cli.next_id([]), 1)
+
+
 class TestCommands(JotTestCase):
     def test_add_then_list(self):
         self.run_jot("add", "write slides", "--tag", "work")
