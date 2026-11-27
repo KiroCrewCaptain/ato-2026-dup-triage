@@ -32,7 +32,7 @@ Use tags to keep seperate lists in one file.
 
 ## Where notes live
 
-`~/.jot/notes.json`, or the path in the `JOT_FILE` environment variable.
+`~/.jot/notes.json`, or the path in the `JOT_FILE` environment variable. On Windows the default location is `C:\Users\<you>\.jot\notes.json`; set `JOT_FILE` with `$env:JOT_FILE = "C:\path\to\notes.json"` in PowerShell or `set JOT_FILE=C:\path\to\notes.json` in cmd.
 
 ## Tests
 
