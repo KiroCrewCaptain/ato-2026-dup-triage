@@ -5,8 +5,9 @@ import json
 import os
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 from jot import cli
 
@@ -77,6 +78,14 @@ class TestCommands(JotTestCase):
     def test_rm_unknown_id(self):
         code, _ = self.run_jot("rm", "42")
         self.assertEqual(code, 1)
+
+    def test_unreadable_notes_file_exits_cleanly(self):
+        err = io.StringIO()
+        with mock.patch("jot.cli.load_notes", side_effect=PermissionError):
+            with redirect_stderr(err):
+                code = cli.main(["list"])
+        self.assertEqual(code, 1)
+        self.assertIn("cannot read notes file", err.getvalue())
 
     def test_export_is_json(self):
         self.run_jot("add", "x")
