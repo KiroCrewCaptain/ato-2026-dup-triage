@@ -116,7 +116,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_rm = sub.add_parser("rm", help="delete a note")
     p_rm.add_argument("id", type=int)
 
-    p_export = sub.add_parser("export", help="print all notes")
+    p_export = sub.add_parser("export", help="print all notes as JSON")
     p_export.add_argument("--format", choices=["json"], default="json")
     return parser
 
