@@ -45,6 +45,10 @@ class TestStorage(JotTestCase):
     def test_jot_file_env_wins(self):
         self.assertEqual(cli.notes_path(), self.path)
 
+    def test_default_path_when_jot_file_unset(self):
+        os.environ.pop("JOT_FILE", None)
+        self.assertEqual(cli.notes_path(), Path.home() / ".jot" / "notes.json")
+
 
 class TestCommands(JotTestCase):
     def test_add_then_list(self):
