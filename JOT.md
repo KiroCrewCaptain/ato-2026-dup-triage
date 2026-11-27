@@ -28,7 +28,7 @@ jot rm 2
 jot export               # all notes as JSON
 ```
 
-Use tags to keep seperate lists in one file.
+Use tags to keep seperate lists in one file. By default `jot list` shows only open notes; done notes are hidden unless you pass `--all`.
 
 ## Where notes live
 
