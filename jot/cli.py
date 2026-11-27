@@ -47,9 +47,9 @@ def save_notes(path: Path, notes: list[dict]) -> None:
 
 
 def next_id(notes: list[dict]) -> int:
-    # Known limit: ids come from the count, so removing a note can make
-    # the next note reuse an id that is still in use.
-    return len(notes) + 1
+    # Use the highest id in use, not the count: after a removal the count can
+    # point at an id that is still taken.
+    return max((int(note["id"]) for note in notes), default=0) + 1
 
 
 def add_note(notes: list[dict], text: str, tags: list[str] | None = None) -> dict:

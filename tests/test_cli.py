@@ -78,6 +78,15 @@ class TestCommands(JotTestCase):
         code, _ = self.run_jot("rm", "42")
         self.assertEqual(code, 1)
 
+    def test_next_id_does_not_reuse_an_id_after_rm(self):
+        self.run_jot("add", "a")
+        self.run_jot("add", "b")
+        self.run_jot("add", "c")
+        self.run_jot("rm", "1")
+        self.run_jot("add", "d")
+        _, out = self.run_jot("export")
+        self.assertEqual([n["id"] for n in json.loads(out)], [2, 3, 4])
+
     def test_export_is_json(self):
         self.run_jot("add", "x")
         _, out = self.run_jot("export")
