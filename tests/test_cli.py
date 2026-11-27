@@ -45,6 +45,15 @@ class TestStorage(JotTestCase):
     def test_jot_file_env_wins(self):
         self.assertEqual(cli.notes_path(), self.path)
 
+    def test_note_missing_tags_and_done_defaults(self):
+        self.path.write_text(json.dumps([
+            {"id": 1, "text": "call the plumber", "created": "2026-10-18 21:40"}
+        ]), encoding="utf-8")
+        code, out = self.run_jot("list")
+        self.assertEqual(code, 0)
+        self.assertIn("call the plumber", out)
+        self.assertNotIn("#", out)
+
 
 class TestCommands(JotTestCase):
     def test_add_then_list(self):

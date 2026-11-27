@@ -37,7 +37,14 @@ def load_notes(path: Path) -> list[dict]:
     # Known limits (see the issue tracker): no explicit encoding, and an
     # empty or truncated file raises instead of being handled.
     with open(path) as fh:
-        return json.load(fh)
+        notes = json.load(fh)
+    # Older or hand-edited notes may omit optional fields. Treat them as
+    # "no tags" and "not done" instead of raising KeyError.
+    for note in notes:
+        if isinstance(note, dict):
+            note.setdefault("tags", [])
+            note.setdefault("done", False)
+    return notes
 
 
 def save_notes(path: Path, notes: list[dict]) -> None:
@@ -79,17 +86,17 @@ def search_notes(notes: list[dict], query: str) -> list[dict]:
 def filter_notes(notes: list[dict], tag: str | None = None, show_all: bool = False) -> list[dict]:
     out = []
     for note in notes:
-        if note["done"] and not show_all:
+        if note.get("done") and not show_all:
             continue
-        if tag and tag not in note["tags"]:
+        if tag and tag not in note.get("tags", []):
             continue
         out.append(note)
     return out
 
 
 def format_note(note: dict) -> str:
-    mark = "x" if note["done"] else " "
-    tags = " ".join(f"#{t}" for t in note["tags"])
+    mark = "x" if note.get("done") else " "
+    tags = " ".join(f"#{t}" for t in note.get("tags", []))
     line = f"[{mark}] {note['id']:>3}  {note['created']}  {note['text']}"
     return f"{line}  {tags}" if tags else line
 
